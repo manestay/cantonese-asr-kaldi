@@ -1,0 +1,1255 @@
+---------------------------------------------------------------------
+Starting mfcc feature extraction for data/train in mfcc on Wed Dec 12 23:09:12 UTC 2018
+---------------------------------------------------------------------
+steps/make_mfcc_pitch.sh --pitch-config conf/pitch.conf --cmd run.pl --nj 32 data/train exp/make_mfcc/train mfcc
+utils/validate_data_dir.sh: Successfully validated data-directory data/train
+steps/make_mfcc_pitch.sh [info]: segments file exists: using that.
+Succeeded creating MFCC & Pitch features for train
+fix_data_dir.sh: kept all 21921 utterances.
+fix_data_dir.sh: old files are kept in data/train/.backup
+steps/compute_cmvn_stats.sh data/train exp/make_mfcc/train mfcc
+Succeeded creating CMVN stats for train
+fix_data_dir.sh: kept all 21921 utterances.
+fix_data_dir.sh: old files are kept in data/train/.backup
+---------------------------------------------------------------------
+Subsetting monophone training data in data/train_sub[123] on Wed Dec 12 23:17:21 UTC 2018
+---------------------------------------------------------------------
+utils/subset_data_dir.sh: reducing #utt from 21921 to 5000
+utils/subset_data_dir.sh: reducing #utt from 21921 to 10000
+utils/subset_data_dir.sh: reducing #utt from 21921 to 20000
+---------------------------------------------------------------------
+Starting (small) monophone training in exp/mono on Wed Dec 12 23:17:23 UTC 2018
+---------------------------------------------------------------------
+steps/train_mono.sh --boost-silence 1.5 --nj 8 --cmd run.pl data/train_sub1 data/lang exp/mono
+steps/train_mono.sh: Initializing monophone system.
+steps/train_mono.sh: Compiling training graphs
+steps/train_mono.sh: Aligning data equally (pass 0)
+steps/train_mono.sh: Pass 1
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 2
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 3
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 4
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 5
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 6
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 7
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 8
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 9
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 10
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 11
+steps/train_mono.sh: Pass 12
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 13
+steps/train_mono.sh: Pass 14
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 15
+steps/train_mono.sh: Pass 16
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 17
+steps/train_mono.sh: Pass 18
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 19
+steps/train_mono.sh: Pass 20
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 21
+steps/train_mono.sh: Pass 22
+steps/train_mono.sh: Pass 23
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 24
+steps/train_mono.sh: Pass 25
+steps/train_mono.sh: Pass 26
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 27
+steps/train_mono.sh: Pass 28
+steps/train_mono.sh: Pass 29
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 30
+steps/train_mono.sh: Pass 31
+steps/train_mono.sh: Pass 32
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 33
+steps/train_mono.sh: Pass 34
+steps/train_mono.sh: Pass 35
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 36
+steps/train_mono.sh: Pass 37
+steps/train_mono.sh: Pass 38
+steps/train_mono.sh: Aligning data
+steps/train_mono.sh: Pass 39
+steps/diagnostic/analyze_alignments.sh --cmd run.pl data/lang exp/mono
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 58.8788788789% of the time at utterance begin.  This may not be optimal.
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 69.0690690691% of the time at utterance end.  This may not be optimal.
+steps/diagnostic/analyze_alignments.sh: see stats in exp/mono/log/analyze_alignments.log
+18766 warnings in exp/mono/log/align.*.*.log
+2 warnings in exp/mono/log/analyze_alignments.log
+1002 warnings in exp/mono/log/acc.*.*.log
+exp/mono: nj=8 align prob=-74.71 over 8.76h [retry=6.9%, fail=0.1%] states=116 gauss=990
+steps/train_mono.sh: Done training monophone system in exp/mono
+---------------------------------------------------------------------
+Starting (small) triphone training in exp/tri1 on Wed Dec 12 23:36:09 UTC 2018
+---------------------------------------------------------------------
+steps/align_si.sh --boost-silence 1.5 --nj 12 --cmd run.pl data/train_sub2 data/lang exp/mono exp/mono_ali_sub2
+steps/align_si.sh: feature type is delta
+steps/align_si.sh: aligning data in data/train_sub2 using model from exp/mono, putting alignments in exp/mono_ali_sub2
+steps/diagnostic/analyze_alignments.sh --cmd run.pl data/lang exp/mono_ali_sub2
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 58.8924494292% of the time at utterance begin.  This may not be optimal.
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 68.7863008211% of the time at utterance end.  This may not be optimal.
+steps/diagnostic/analyze_alignments.sh: see stats in exp/mono_ali_sub2/log/analyze_alignments.log
+steps/align_si.sh: done aligning data.
+steps/train_deltas.sh --boost-silence 1.5 --cmd run.pl 4000 32000 data/train_sub2 data/lang exp/mono_ali_sub2 exp/tri1
+steps/train_deltas.sh: accumulating tree stats
+steps/train_deltas.sh: getting questions for tree-building, via clustering
+steps/train_deltas.sh: building the tree
+steps/train_deltas.sh: converting alignments from exp/mono_ali_sub2 to use current tree
+steps/train_deltas.sh: compiling graphs of transcripts
+steps/train_deltas.sh: training pass 1
+steps/train_deltas.sh: training pass 2
+steps/train_deltas.sh: training pass 3
+steps/train_deltas.sh: training pass 4
+steps/train_deltas.sh: training pass 5
+steps/train_deltas.sh: training pass 6
+steps/train_deltas.sh: training pass 7
+steps/train_deltas.sh: training pass 8
+steps/train_deltas.sh: training pass 9
+steps/train_deltas.sh: training pass 10
+steps/train_deltas.sh: aligning data
+steps/train_deltas.sh: training pass 11
+steps/train_deltas.sh: training pass 12
+steps/train_deltas.sh: training pass 13
+steps/train_deltas.sh: training pass 14
+steps/train_deltas.sh: training pass 15
+steps/train_deltas.sh: training pass 16
+steps/train_deltas.sh: training pass 17
+steps/train_deltas.sh: training pass 18
+steps/train_deltas.sh: training pass 19
+steps/train_deltas.sh: training pass 20
+steps/train_deltas.sh: aligning data
+steps/train_deltas.sh: training pass 21
+steps/train_deltas.sh: training pass 22
+steps/train_deltas.sh: training pass 23
+steps/train_deltas.sh: training pass 24
+steps/train_deltas.sh: training pass 25
+steps/train_deltas.sh: training pass 26
+steps/train_deltas.sh: training pass 27
+steps/train_deltas.sh: training pass 28
+steps/train_deltas.sh: training pass 29
+steps/train_deltas.sh: training pass 30
+steps/train_deltas.sh: aligning data
+steps/train_deltas.sh: training pass 31
+steps/train_deltas.sh: training pass 32
+steps/train_deltas.sh: training pass 33
+steps/train_deltas.sh: training pass 34
+steps/diagnostic/analyze_alignments.sh --cmd run.pl data/lang exp/tri1
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 41.7109085445% of the time at utterance begin.  This may not be optimal.
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 67.1741961334% of the time at utterance end.  This may not be optimal.
+steps/diagnostic/analyze_alignments.sh: see stats in exp/tri1/log/analyze_alignments.log
+2 warnings in exp/tri1/log/analyze_alignments.log
+551 warnings in exp/tri1/log/acc.*.*.log
+1 warnings in exp/tri1/log/compile_questions.log
+208 warnings in exp/tri1/log/init_model.log
+261 warnings in exp/tri1/log/update.*.log
+1519 warnings in exp/tri1/log/align.*.*.log
+1 warnings in exp/tri1/log/build_tree.log
+exp/tri1: nj=12 align prob=-72.02 over 17.54h [retry=3.5%, fail=0.2%] states=2512 gauss=32079 tree-impr=5.77
+steps/train_deltas.sh: Done training system with delta+delta-delta features in exp/tri1
+---------------------------------------------------------------------
+Starting (medium) triphone training in exp/tri2 on Wed Dec 12 23:58:58 UTC 2018
+---------------------------------------------------------------------
+steps/align_si.sh --boost-silence 1.5 --nj 24 --cmd run.pl data/train_sub3 data/lang exp/tri1 exp/tri1_ali_sub3
+steps/align_si.sh: feature type is delta
+steps/align_si.sh: aligning data in data/train_sub3 using model from exp/tri1, putting alignments in exp/tri1_ali_sub3
+steps/diagnostic/analyze_alignments.sh --cmd run.pl data/lang exp/tri1_ali_sub3
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 40.1525032608% of the time at utterance begin.  This may not be optimal.
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 66.6449282633% of the time at utterance end.  This may not be optimal.
+steps/diagnostic/analyze_alignments.sh: see stats in exp/tri1_ali_sub3/log/analyze_alignments.log
+steps/align_si.sh: done aligning data.
+steps/train_deltas.sh --boost-silence 1.5 --cmd run.pl 7000 56000 data/train_sub3 data/lang exp/tri1_ali_sub3 exp/tri2
+steps/train_deltas.sh: accumulating tree stats
+steps/train_deltas.sh: getting questions for tree-building, via clustering
+steps/train_deltas.sh: building the tree
+steps/train_deltas.sh: converting alignments from exp/tri1_ali_sub3 to use current tree
+steps/train_deltas.sh: compiling graphs of transcripts
+steps/train_deltas.sh: training pass 1
+steps/train_deltas.sh: training pass 2
+steps/train_deltas.sh: training pass 3
+steps/train_deltas.sh: training pass 4
+steps/train_deltas.sh: training pass 5
+steps/train_deltas.sh: training pass 6
+steps/train_deltas.sh: training pass 7
+steps/train_deltas.sh: training pass 8
+steps/train_deltas.sh: training pass 9
+steps/train_deltas.sh: training pass 10
+steps/train_deltas.sh: aligning data
+steps/train_deltas.sh: training pass 11
+steps/train_deltas.sh: training pass 12
+steps/train_deltas.sh: training pass 13
+steps/train_deltas.sh: training pass 14
+steps/train_deltas.sh: training pass 15
+steps/train_deltas.sh: training pass 16
+steps/train_deltas.sh: training pass 17
+steps/train_deltas.sh: training pass 18
+steps/train_deltas.sh: training pass 19
+steps/train_deltas.sh: training pass 20
+steps/train_deltas.sh: aligning data
+steps/train_deltas.sh: training pass 21
+steps/train_deltas.sh: training pass 22
+steps/train_deltas.sh: training pass 23
+steps/train_deltas.sh: training pass 24
+steps/train_deltas.sh: training pass 25
+steps/train_deltas.sh: training pass 26
+steps/train_deltas.sh: training pass 27
+steps/train_deltas.sh: training pass 28
+steps/train_deltas.sh: training pass 29
+steps/train_deltas.sh: training pass 30
+steps/train_deltas.sh: aligning data
+steps/train_deltas.sh: training pass 31
+steps/train_deltas.sh: training pass 32
+steps/train_deltas.sh: training pass 33
+steps/train_deltas.sh: training pass 34
+steps/diagnostic/analyze_alignments.sh --cmd run.pl data/lang exp/tri2
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 30.4552511644% of the time at utterance begin.  This may not be optimal.
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 65.3077578004% of the time at utterance end.  This may not be optimal.
+steps/diagnostic/analyze_alignments.sh: see stats in exp/tri2/log/analyze_alignments.log
+1549 warnings in exp/tri2/log/acc.*.*.log
+323 warnings in exp/tri2/log/update.*.log
+1 warnings in exp/tri2/log/compile_questions.log
+3371 warnings in exp/tri2/log/align.*.*.log
+297 warnings in exp/tri2/log/init_model.log
+2 warnings in exp/tri2/log/analyze_alignments.log
+1 warnings in exp/tri2/log/build_tree.log
+exp/tri2: nj=24 align prob=-71.87 over 34.92h [retry=4.0%, fail=0.2%] states=4592 gauss=56096 tree-impr=6.81
+steps/train_deltas.sh: Done training system with delta+delta-delta features in exp/tri2
+steps/get_prons.sh --cmd run.pl data/train_sub3 data/lang exp/tri2
+steps/get_prons.sh: exp/tri2/ali.1.gz exists, so starting from alignments.
+steps/get_prons.sh: done writing prons to exp/tri2/prons.*.gz, silence counts in 
+steps/get_prons.sh: exp/tri2/sil_counts_nowb.txt and pronunciation counts in 
+steps/get_prons.sh: exp/tri2/pron_counts.{int,txt}
+steps/get_prons.sh: ... and also in exp/tri2/pron_counts_nowb.txt
+Checking data/local/silence_phones.txt ...
+--> reading data/local/silence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/silence_phones.txt is OK
+
+Checking data/local/optional_silence.txt ...
+--> reading data/local/optional_silence.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/optional_silence.txt is OK
+
+Checking data/local/nonsilence_phones.txt ...
+--> reading data/local/nonsilence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/nonsilence_phones.txt is OK
+
+Checking disjoint: silence_phones.txt, nonsilence_phones.txt
+--> disjoint property is OK.
+
+Checking data/local/lexicon.txt
+--> reading data/local/lexicon.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/lexicon.txt is OK
+
+Checking data/local/lexiconp.txt
+--> reading data/local/lexiconp.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/lexiconp.txt is OK
+
+Checking lexicon pair data/local/lexicon.txt and data/local/lexiconp.txt
+--> lexicon pair data/local/lexicon.txt and data/local/lexiconp.txt match
+
+Checking data/local/extra_questions.txt ...
+--> reading data/local/extra_questions.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/extra_questions.txt is OK
+--> SUCCESS [validating dictionary directory data/local]
+
+utils/dict_dir_add_pronprobs.sh: normalizing pronprobs so maximum is 1 for each word.
+utils/dict_dir_add_pronprobs.sh: produced dictionary directory with probabilities in data/local/dictp/tri2/
+utils/dict_dir_add_pronprobs.sh: validating data/local/dictp/tri2 ..
+Checking data/local/dictp/tri2/silence_phones.txt ...
+--> reading data/local/dictp/tri2/silence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri2/silence_phones.txt is OK
+
+Checking data/local/dictp/tri2/optional_silence.txt ...
+--> reading data/local/dictp/tri2/optional_silence.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri2/optional_silence.txt is OK
+
+Checking data/local/dictp/tri2/nonsilence_phones.txt ...
+--> reading data/local/dictp/tri2/nonsilence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri2/nonsilence_phones.txt is OK
+
+Checking disjoint: silence_phones.txt, nonsilence_phones.txt
+--> disjoint property is OK.
+
+Checking data/local/dictp/tri2/lexicon.txt
+--> reading data/local/dictp/tri2/lexicon.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri2/lexicon.txt is OK
+
+Checking data/local/dictp/tri2/lexiconp.txt
+--> reading data/local/dictp/tri2/lexiconp.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri2/lexiconp.txt is OK
+
+Checking data/local/dictp/tri2/lexiconp_silprob.txt
+--> reading data/local/dictp/tri2/lexiconp_silprob.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri2/lexiconp_silprob.txt is OK
+
+Checking lexicon pair data/local/dictp/tri2/lexicon.txt and data/local/dictp/tri2/lexiconp.txt
+--> lexicon pair data/local/dictp/tri2/lexicon.txt and data/local/dictp/tri2/lexiconp.txt match
+
+Checking lexicon pair data/local/dictp/tri2/lexiconp.txt and data/local/dictp/tri2/lexiconp_silprob.txt
+--> lexicon pair data/local/dictp/tri2/lexiconp.txt and data/local/dictp/tri2/lexiconp_silprob.txt match
+
+Checking data/local/dictp/tri2/extra_questions.txt ...
+--> reading data/local/dictp/tri2/extra_questions.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri2/extra_questions.txt is OK
+--> SUCCESS [validating dictionary directory data/local/dictp/tri2]
+
+Some low-probability prons include: 
+# sort -k2,2 -n data/local/dictp/tri2/lexiconp.txt  | head -n 8
+广州 0.0140845 gw_2 O:_2 N_2 dz_1 6w_1
+过年 0.0238095 gw_3 O:_3 n_4 i:_4 n_4
+过去 0.0322581 gw_3 O:_3 h_3 9y_3
+<hes> 0.0382571 6_6 m_6
+听到 0.0431819 t_3 i:_3 N_3 d_3 ow_3
+过年 0.047619 gw_3 O:_3 l_4 i:_4 n_4
+听到 0.0522727 t_3 i:_3 N_3 d_2 ow_2
+女仔 0.0555556 n_5 9y_5 dz_2 6j_2
+utils/prepare_lang.sh --phone-symbol-table data/lang/phones.txt --share-silence-phones true data/local/dictp/tri2 <unk> data/local/langp/tri2 data/langp/tri2
+Checking data/local/dictp/tri2/silence_phones.txt ...
+--> reading data/local/dictp/tri2/silence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri2/silence_phones.txt is OK
+
+Checking data/local/dictp/tri2/optional_silence.txt ...
+--> reading data/local/dictp/tri2/optional_silence.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri2/optional_silence.txt is OK
+
+Checking data/local/dictp/tri2/nonsilence_phones.txt ...
+--> reading data/local/dictp/tri2/nonsilence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri2/nonsilence_phones.txt is OK
+
+Checking disjoint: silence_phones.txt, nonsilence_phones.txt
+--> disjoint property is OK.
+
+Checking data/local/dictp/tri2/lexicon.txt
+--> reading data/local/dictp/tri2/lexicon.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri2/lexicon.txt is OK
+
+Checking data/local/dictp/tri2/lexiconp.txt
+--> reading data/local/dictp/tri2/lexiconp.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri2/lexiconp.txt is OK
+
+Checking data/local/dictp/tri2/lexiconp_silprob.txt
+--> reading data/local/dictp/tri2/lexiconp_silprob.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri2/lexiconp_silprob.txt is OK
+
+Checking lexicon pair data/local/dictp/tri2/lexicon.txt and data/local/dictp/tri2/lexiconp.txt
+--> lexicon pair data/local/dictp/tri2/lexicon.txt and data/local/dictp/tri2/lexiconp.txt match
+
+Checking lexicon pair data/local/dictp/tri2/lexiconp.txt and data/local/dictp/tri2/lexiconp_silprob.txt
+--> lexicon pair data/local/dictp/tri2/lexiconp.txt and data/local/dictp/tri2/lexiconp_silprob.txt match
+
+Checking data/local/dictp/tri2/extra_questions.txt ...
+--> reading data/local/dictp/tri2/extra_questions.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri2/extra_questions.txt is OK
+--> SUCCESS [validating dictionary directory data/local/dictp/tri2]
+
+fstaddselfloops data/langp/tri2/phones/wdisambig_phones.int data/langp/tri2/phones/wdisambig_words.int 
+prepare_lang.sh: validating output directory
+utils/validate_lang.pl data/langp/tri2
+Checking data/langp/tri2/phones.txt ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/langp/tri2/phones.txt is OK
+
+Checking words.txt: #0 ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/langp/tri2/words.txt is OK
+
+Checking disjoint: silence.txt, nonsilence.txt, disambig.txt ...
+--> silence.txt and nonsilence.txt are disjoint
+--> silence.txt and disambig.txt are disjoint
+--> disambig.txt and nonsilence.txt are disjoint
+--> disjoint property is OK
+
+Checking sumation: silence.txt, nonsilence.txt, disambig.txt ...
+--> found no unexplainable phones in phones.txt
+
+Checking data/langp/tri2/phones/context_indep.{txt, int, csl} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 20 entry/entries in data/langp/tri2/phones/context_indep.txt
+--> data/langp/tri2/phones/context_indep.int corresponds to data/langp/tri2/phones/context_indep.txt
+--> data/langp/tri2/phones/context_indep.csl corresponds to data/langp/tri2/phones/context_indep.txt
+--> data/langp/tri2/phones/context_indep.{txt, int, csl} are OK
+
+Checking data/langp/tri2/phones/nonsilence.{txt, int, csl} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 856 entry/entries in data/langp/tri2/phones/nonsilence.txt
+--> data/langp/tri2/phones/nonsilence.int corresponds to data/langp/tri2/phones/nonsilence.txt
+--> data/langp/tri2/phones/nonsilence.csl corresponds to data/langp/tri2/phones/nonsilence.txt
+--> data/langp/tri2/phones/nonsilence.{txt, int, csl} are OK
+
+Checking data/langp/tri2/phones/silence.{txt, int, csl} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 20 entry/entries in data/langp/tri2/phones/silence.txt
+--> data/langp/tri2/phones/silence.int corresponds to data/langp/tri2/phones/silence.txt
+--> data/langp/tri2/phones/silence.csl corresponds to data/langp/tri2/phones/silence.txt
+--> data/langp/tri2/phones/silence.{txt, int, csl} are OK
+
+Checking data/langp/tri2/phones/optional_silence.{txt, int, csl} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 1 entry/entries in data/langp/tri2/phones/optional_silence.txt
+--> data/langp/tri2/phones/optional_silence.int corresponds to data/langp/tri2/phones/optional_silence.txt
+--> data/langp/tri2/phones/optional_silence.csl corresponds to data/langp/tri2/phones/optional_silence.txt
+--> data/langp/tri2/phones/optional_silence.{txt, int, csl} are OK
+
+Checking data/langp/tri2/phones/disambig.{txt, int, csl} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 10 entry/entries in data/langp/tri2/phones/disambig.txt
+--> data/langp/tri2/phones/disambig.int corresponds to data/langp/tri2/phones/disambig.txt
+--> data/langp/tri2/phones/disambig.csl corresponds to data/langp/tri2/phones/disambig.txt
+--> data/langp/tri2/phones/disambig.{txt, int, csl} are OK
+
+Checking data/langp/tri2/phones/roots.{txt, int} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 38 entry/entries in data/langp/tri2/phones/roots.txt
+--> data/langp/tri2/phones/roots.int corresponds to data/langp/tri2/phones/roots.txt
+--> data/langp/tri2/phones/roots.{txt, int} are OK
+
+Checking data/langp/tri2/phones/sets.{txt, int} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 38 entry/entries in data/langp/tri2/phones/sets.txt
+--> data/langp/tri2/phones/sets.int corresponds to data/langp/tri2/phones/sets.txt
+--> data/langp/tri2/phones/sets.{txt, int} are OK
+
+Checking data/langp/tri2/phones/extra_questions.{txt, int} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 16 entry/entries in data/langp/tri2/phones/extra_questions.txt
+--> data/langp/tri2/phones/extra_questions.int corresponds to data/langp/tri2/phones/extra_questions.txt
+--> data/langp/tri2/phones/extra_questions.{txt, int} are OK
+
+Checking data/langp/tri2/phones/word_boundary.{txt, int} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 876 entry/entries in data/langp/tri2/phones/word_boundary.txt
+--> data/langp/tri2/phones/word_boundary.int corresponds to data/langp/tri2/phones/word_boundary.txt
+--> data/langp/tri2/phones/word_boundary.{txt, int} are OK
+
+Checking optional_silence.txt ...
+--> reading data/langp/tri2/phones/optional_silence.txt
+--> data/langp/tri2/phones/optional_silence.txt is OK
+
+Checking disambiguation symbols: #0 and #1
+--> data/langp/tri2/phones/disambig.txt has "#0" and "#1"
+--> data/langp/tri2/phones/disambig.txt is OK
+
+Checking topo ...
+
+Checking word_boundary.txt: silence.txt, nonsilence.txt, disambig.txt ...
+--> data/langp/tri2/phones/word_boundary.txt doesn't include disambiguation symbols
+--> data/langp/tri2/phones/word_boundary.txt is the union of nonsilence.txt and silence.txt
+--> data/langp/tri2/phones/word_boundary.txt is OK
+
+Checking word-level disambiguation symbols...
+--> data/langp/tri2/phones/wdisambig.txt exists (newer prepare_lang.sh)
+Checking word_boundary.int and disambig.int
+--> generating a 96 word sequence
+--> resulting phone sequence from L.fst corresponds to the word sequence
+--> L.fst is OK
+--> generating a 52 word sequence
+--> resulting phone sequence from L_disambig.fst corresponds to the word sequence
+--> L_disambig.fst is OK
+
+Checking data/langp/tri2/oov.{txt, int} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 1 entry/entries in data/langp/tri2/oov.txt
+--> data/langp/tri2/oov.int corresponds to data/langp/tri2/oov.txt
+--> data/langp/tri2/oov.{txt, int} are OK
+
+--> data/langp/tri2/L.fst is olabel sorted
+--> data/langp/tri2/L_disambig.fst is olabel sorted
+--> SUCCESS [validating lang directory data/langp/tri2]
+---------------------------------------------------------------------
+Starting (full) triphone training in exp/tri3 on Thu Dec 13 00:44:13 UTC 2018
+---------------------------------------------------------------------
+steps/align_si.sh --boost-silence 1.5 --nj 32 --cmd run.pl data/train data/langp/tri2 exp/tri2 exp/tri2_ali
+steps/align_si.sh: feature type is delta
+steps/align_si.sh: aligning data in data/train using model from exp/tri2, putting alignments in exp/tri2_ali
+steps/diagnostic/analyze_alignments.sh --cmd run.pl data/langp/tri2 exp/tri2_ali
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 28.6308571429% of the time at utterance begin.  This may not be optimal.
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 70.272% of the time at utterance end.  This may not be optimal.
+steps/diagnostic/analyze_alignments.sh: see stats in exp/tri2_ali/log/analyze_alignments.log
+steps/align_si.sh: done aligning data.
+steps/train_deltas.sh --boost-silence 1.5 --cmd run.pl 7000 56000 data/train data/langp/tri2 exp/tri2_ali exp/tri3
+steps/train_deltas.sh: accumulating tree stats
+steps/train_deltas.sh: getting questions for tree-building, via clustering
+steps/train_deltas.sh: building the tree
+steps/train_deltas.sh: converting alignments from exp/tri2_ali to use current tree
+steps/train_deltas.sh: compiling graphs of transcripts
+steps/train_deltas.sh: training pass 1
+steps/train_deltas.sh: training pass 2
+steps/train_deltas.sh: training pass 3
+steps/train_deltas.sh: training pass 4
+steps/train_deltas.sh: training pass 5
+steps/train_deltas.sh: training pass 6
+steps/train_deltas.sh: training pass 7
+steps/train_deltas.sh: training pass 8
+steps/train_deltas.sh: training pass 9
+steps/train_deltas.sh: training pass 10
+steps/train_deltas.sh: aligning data
+steps/train_deltas.sh: training pass 11
+steps/train_deltas.sh: training pass 12
+steps/train_deltas.sh: training pass 13
+steps/train_deltas.sh: training pass 14
+steps/train_deltas.sh: training pass 15
+steps/train_deltas.sh: training pass 16
+steps/train_deltas.sh: training pass 17
+steps/train_deltas.sh: training pass 18
+steps/train_deltas.sh: training pass 19
+steps/train_deltas.sh: training pass 20
+steps/train_deltas.sh: aligning data
+steps/train_deltas.sh: training pass 21
+steps/train_deltas.sh: training pass 22
+steps/train_deltas.sh: training pass 23
+steps/train_deltas.sh: training pass 24
+steps/train_deltas.sh: training pass 25
+steps/train_deltas.sh: training pass 26
+steps/train_deltas.sh: training pass 27
+steps/train_deltas.sh: training pass 28
+steps/train_deltas.sh: training pass 29
+steps/train_deltas.sh: training pass 30
+steps/train_deltas.sh: aligning data
+steps/train_deltas.sh: training pass 31
+steps/train_deltas.sh: training pass 32
+steps/train_deltas.sh: training pass 33
+steps/train_deltas.sh: training pass 34
+steps/diagnostic/analyze_alignments.sh --cmd run.pl data/langp/tri2 exp/tri3
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 23.4151469446% of the time at utterance begin.  This may not be optimal.
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 70.4511175099% of the time at utterance end.  This may not be optimal.
+steps/diagnostic/analyze_alignments.sh: see stats in exp/tri3/log/analyze_alignments.log
+1494 warnings in exp/tri3/log/acc.*.*.log
+1 warnings in exp/tri3/log/build_tree.log
+229 warnings in exp/tri3/log/init_model.log
+2 warnings in exp/tri3/log/analyze_alignments.log
+3188 warnings in exp/tri3/log/align.*.*.log
+199 warnings in exp/tri3/log/update.*.log
+1 warnings in exp/tri3/log/compile_questions.log
+exp/tri3: nj=32 align prob=-71.88 over 38.25h [retry=3.6%, fail=0.2%] states=4632 gauss=56086 tree-impr=7.17
+steps/train_deltas.sh: Done training system with delta+delta-delta features in exp/tri3
+steps/get_prons.sh --cmd run.pl data/train data/lang exp/tri3
+steps/get_prons.sh: exp/tri3/ali.1.gz exists, so starting from alignments.
+steps/get_prons.sh: done writing prons to exp/tri3/prons.*.gz, silence counts in 
+steps/get_prons.sh: exp/tri3/sil_counts_nowb.txt and pronunciation counts in 
+steps/get_prons.sh: exp/tri3/pron_counts.{int,txt}
+steps/get_prons.sh: ... and also in exp/tri3/pron_counts_nowb.txt
+Checking data/local/silence_phones.txt ...
+--> reading data/local/silence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/silence_phones.txt is OK
+
+Checking data/local/optional_silence.txt ...
+--> reading data/local/optional_silence.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/optional_silence.txt is OK
+
+Checking data/local/nonsilence_phones.txt ...
+--> reading data/local/nonsilence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/nonsilence_phones.txt is OK
+
+Checking disjoint: silence_phones.txt, nonsilence_phones.txt
+--> disjoint property is OK.
+
+Checking data/local/lexicon.txt
+--> reading data/local/lexicon.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/lexicon.txt is OK
+
+Checking data/local/lexiconp.txt
+--> reading data/local/lexiconp.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/lexiconp.txt is OK
+
+Checking lexicon pair data/local/lexicon.txt and data/local/lexiconp.txt
+--> lexicon pair data/local/lexicon.txt and data/local/lexiconp.txt match
+
+Checking data/local/extra_questions.txt ...
+--> reading data/local/extra_questions.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/extra_questions.txt is OK
+--> SUCCESS [validating dictionary directory data/local]
+
+utils/dict_dir_add_pronprobs.sh: normalizing pronprobs so maximum is 1 for each word.
+utils/dict_dir_add_pronprobs.sh: produced dictionary directory with probabilities in data/local/dictp/tri3/
+utils/dict_dir_add_pronprobs.sh: validating data/local/dictp/tri3 ..
+Checking data/local/dictp/tri3/silence_phones.txt ...
+--> reading data/local/dictp/tri3/silence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri3/silence_phones.txt is OK
+
+Checking data/local/dictp/tri3/optional_silence.txt ...
+--> reading data/local/dictp/tri3/optional_silence.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri3/optional_silence.txt is OK
+
+Checking data/local/dictp/tri3/nonsilence_phones.txt ...
+--> reading data/local/dictp/tri3/nonsilence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri3/nonsilence_phones.txt is OK
+
+Checking disjoint: silence_phones.txt, nonsilence_phones.txt
+--> disjoint property is OK.
+
+Checking data/local/dictp/tri3/lexicon.txt
+--> reading data/local/dictp/tri3/lexicon.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri3/lexicon.txt is OK
+
+Checking data/local/dictp/tri3/lexiconp.txt
+--> reading data/local/dictp/tri3/lexiconp.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri3/lexiconp.txt is OK
+
+Checking data/local/dictp/tri3/lexiconp_silprob.txt
+--> reading data/local/dictp/tri3/lexiconp_silprob.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri3/lexiconp_silprob.txt is OK
+
+Checking lexicon pair data/local/dictp/tri3/lexicon.txt and data/local/dictp/tri3/lexiconp.txt
+--> lexicon pair data/local/dictp/tri3/lexicon.txt and data/local/dictp/tri3/lexiconp.txt match
+
+Checking lexicon pair data/local/dictp/tri3/lexiconp.txt and data/local/dictp/tri3/lexiconp_silprob.txt
+--> lexicon pair data/local/dictp/tri3/lexiconp.txt and data/local/dictp/tri3/lexiconp_silprob.txt match
+
+Checking data/local/dictp/tri3/extra_questions.txt ...
+--> reading data/local/dictp/tri3/extra_questions.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri3/extra_questions.txt is OK
+--> SUCCESS [validating dictionary directory data/local/dictp/tri3]
+
+Some low-probability prons include: 
+# sort -k2,2 -n data/local/dictp/tri3/lexiconp.txt  | head -n 8
+广州 0.0123457 gw_2 O:_2 N_2 dz_1 6w_1
+<hes> 0.0216572 6_6 m_6
+过年 0.0217391 gw_3 O:_3 l_4 i:_4 n_4
+过年 0.0217391 gw_3 O:_3 n_4 i:_4 n_4
+过去 0.0285715 gw_3 O:_3 h_3 9y_3
+过来 0.0294117 gw_3 O:_3 l_4 O:j_4
+过嚟 0.030303 gw_3 O:_3 l_4 6j_4
+行下 0.0333334 h_4 6_4 N_4 h_5 a:_5
+utils/prepare_lang.sh --phone-symbol-table data/lang/phones.txt --share-silence-phones true data/local/dictp/tri3 <unk> data/local/langp/tri3 data/langp/tri3
+Checking data/local/dictp/tri3/silence_phones.txt ...
+--> reading data/local/dictp/tri3/silence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri3/silence_phones.txt is OK
+
+Checking data/local/dictp/tri3/optional_silence.txt ...
+--> reading data/local/dictp/tri3/optional_silence.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri3/optional_silence.txt is OK
+
+Checking data/local/dictp/tri3/nonsilence_phones.txt ...
+--> reading data/local/dictp/tri3/nonsilence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri3/nonsilence_phones.txt is OK
+
+Checking disjoint: silence_phones.txt, nonsilence_phones.txt
+--> disjoint property is OK.
+
+Checking data/local/dictp/tri3/lexicon.txt
+--> reading data/local/dictp/tri3/lexicon.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri3/lexicon.txt is OK
+
+Checking data/local/dictp/tri3/lexiconp.txt
+--> reading data/local/dictp/tri3/lexiconp.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri3/lexiconp.txt is OK
+
+Checking data/local/dictp/tri3/lexiconp_silprob.txt
+--> reading data/local/dictp/tri3/lexiconp_silprob.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri3/lexiconp_silprob.txt is OK
+
+Checking lexicon pair data/local/dictp/tri3/lexicon.txt and data/local/dictp/tri3/lexiconp.txt
+--> lexicon pair data/local/dictp/tri3/lexicon.txt and data/local/dictp/tri3/lexiconp.txt match
+
+Checking lexicon pair data/local/dictp/tri3/lexiconp.txt and data/local/dictp/tri3/lexiconp_silprob.txt
+--> lexicon pair data/local/dictp/tri3/lexiconp.txt and data/local/dictp/tri3/lexiconp_silprob.txt match
+
+Checking data/local/dictp/tri3/extra_questions.txt ...
+--> reading data/local/dictp/tri3/extra_questions.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri3/extra_questions.txt is OK
+--> SUCCESS [validating dictionary directory data/local/dictp/tri3]
+
+fstaddselfloops data/langp/tri3/phones/wdisambig_phones.int data/langp/tri3/phones/wdisambig_words.int 
+prepare_lang.sh: validating output directory
+utils/validate_lang.pl data/langp/tri3
+Checking data/langp/tri3/phones.txt ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/langp/tri3/phones.txt is OK
+
+Checking words.txt: #0 ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/langp/tri3/words.txt is OK
+
+Checking disjoint: silence.txt, nonsilence.txt, disambig.txt ...
+--> silence.txt and nonsilence.txt are disjoint
+--> silence.txt and disambig.txt are disjoint
+--> disambig.txt and nonsilence.txt are disjoint
+--> disjoint property is OK
+
+Checking sumation: silence.txt, nonsilence.txt, disambig.txt ...
+--> found no unexplainable phones in phones.txt
+
+Checking data/langp/tri3/phones/context_indep.{txt, int, csl} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 20 entry/entries in data/langp/tri3/phones/context_indep.txt
+--> data/langp/tri3/phones/context_indep.int corresponds to data/langp/tri3/phones/context_indep.txt
+--> data/langp/tri3/phones/context_indep.csl corresponds to data/langp/tri3/phones/context_indep.txt
+--> data/langp/tri3/phones/context_indep.{txt, int, csl} are OK
+
+Checking data/langp/tri3/phones/nonsilence.{txt, int, csl} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 856 entry/entries in data/langp/tri3/phones/nonsilence.txt
+--> data/langp/tri3/phones/nonsilence.int corresponds to data/langp/tri3/phones/nonsilence.txt
+--> data/langp/tri3/phones/nonsilence.csl corresponds to data/langp/tri3/phones/nonsilence.txt
+--> data/langp/tri3/phones/nonsilence.{txt, int, csl} are OK
+
+Checking data/langp/tri3/phones/silence.{txt, int, csl} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 20 entry/entries in data/langp/tri3/phones/silence.txt
+--> data/langp/tri3/phones/silence.int corresponds to data/langp/tri3/phones/silence.txt
+--> data/langp/tri3/phones/silence.csl corresponds to data/langp/tri3/phones/silence.txt
+--> data/langp/tri3/phones/silence.{txt, int, csl} are OK
+
+Checking data/langp/tri3/phones/optional_silence.{txt, int, csl} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 1 entry/entries in data/langp/tri3/phones/optional_silence.txt
+--> data/langp/tri3/phones/optional_silence.int corresponds to data/langp/tri3/phones/optional_silence.txt
+--> data/langp/tri3/phones/optional_silence.csl corresponds to data/langp/tri3/phones/optional_silence.txt
+--> data/langp/tri3/phones/optional_silence.{txt, int, csl} are OK
+
+Checking data/langp/tri3/phones/disambig.{txt, int, csl} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 10 entry/entries in data/langp/tri3/phones/disambig.txt
+--> data/langp/tri3/phones/disambig.int corresponds to data/langp/tri3/phones/disambig.txt
+--> data/langp/tri3/phones/disambig.csl corresponds to data/langp/tri3/phones/disambig.txt
+--> data/langp/tri3/phones/disambig.{txt, int, csl} are OK
+
+Checking data/langp/tri3/phones/roots.{txt, int} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 38 entry/entries in data/langp/tri3/phones/roots.txt
+--> data/langp/tri3/phones/roots.int corresponds to data/langp/tri3/phones/roots.txt
+--> data/langp/tri3/phones/roots.{txt, int} are OK
+
+Checking data/langp/tri3/phones/sets.{txt, int} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 38 entry/entries in data/langp/tri3/phones/sets.txt
+--> data/langp/tri3/phones/sets.int corresponds to data/langp/tri3/phones/sets.txt
+--> data/langp/tri3/phones/sets.{txt, int} are OK
+
+Checking data/langp/tri3/phones/extra_questions.{txt, int} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 16 entry/entries in data/langp/tri3/phones/extra_questions.txt
+--> data/langp/tri3/phones/extra_questions.int corresponds to data/langp/tri3/phones/extra_questions.txt
+--> data/langp/tri3/phones/extra_questions.{txt, int} are OK
+
+Checking data/langp/tri3/phones/word_boundary.{txt, int} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 876 entry/entries in data/langp/tri3/phones/word_boundary.txt
+--> data/langp/tri3/phones/word_boundary.int corresponds to data/langp/tri3/phones/word_boundary.txt
+--> data/langp/tri3/phones/word_boundary.{txt, int} are OK
+
+Checking optional_silence.txt ...
+--> reading data/langp/tri3/phones/optional_silence.txt
+--> data/langp/tri3/phones/optional_silence.txt is OK
+
+Checking disambiguation symbols: #0 and #1
+--> data/langp/tri3/phones/disambig.txt has "#0" and "#1"
+--> data/langp/tri3/phones/disambig.txt is OK
+
+Checking topo ...
+
+Checking word_boundary.txt: silence.txt, nonsilence.txt, disambig.txt ...
+--> data/langp/tri3/phones/word_boundary.txt doesn't include disambiguation symbols
+--> data/langp/tri3/phones/word_boundary.txt is the union of nonsilence.txt and silence.txt
+--> data/langp/tri3/phones/word_boundary.txt is OK
+
+Checking word-level disambiguation symbols...
+--> data/langp/tri3/phones/wdisambig.txt exists (newer prepare_lang.sh)
+Checking word_boundary.int and disambig.int
+--> generating a 100 word sequence
+--> resulting phone sequence from L.fst corresponds to the word sequence
+--> L.fst is OK
+--> generating a 38 word sequence
+--> resulting phone sequence from L_disambig.fst corresponds to the word sequence
+--> L_disambig.fst is OK
+
+Checking data/langp/tri3/oov.{txt, int} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 1 entry/entries in data/langp/tri3/oov.txt
+--> data/langp/tri3/oov.int corresponds to data/langp/tri3/oov.txt
+--> data/langp/tri3/oov.{txt, int} are OK
+
+--> data/langp/tri3/L.fst is olabel sorted
+--> data/langp/tri3/L_disambig.fst is olabel sorted
+--> SUCCESS [validating lang directory data/langp/tri3]
+---------------------------------------------------------------------
+Starting (lda_mllt) triphone training in exp/tri4 on Thu Dec 13 01:25:23 UTC 2018
+---------------------------------------------------------------------
+steps/align_si.sh --boost-silence 1.5 --nj 32 --cmd run.pl data/train data/langp/tri3 exp/tri3 exp/tri3_ali
+steps/align_si.sh: feature type is delta
+steps/align_si.sh: aligning data in data/train using model from exp/tri3, putting alignments in exp/tri3_ali
+steps/diagnostic/analyze_alignments.sh --cmd run.pl data/langp/tri3 exp/tri3_ali
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 22.5878696467% of the time at utterance begin.  This may not be optimal.
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 72.3844782668% of the time at utterance end.  This may not be optimal.
+steps/diagnostic/analyze_alignments.sh: see stats in exp/tri3_ali/log/analyze_alignments.log
+steps/align_si.sh: done aligning data.
+steps/train_lda_mllt.sh --boost-silence 1.5 --cmd run.pl 10000 80000 data/train data/langp/tri3 exp/tri3_ali exp/tri4
+steps/train_lda_mllt.sh: Accumulating LDA statistics.
+steps/train_lda_mllt.sh: Accumulating tree stats
+steps/train_lda_mllt.sh: Getting questions for tree clustering.
+steps/train_lda_mllt.sh: Building the tree
+steps/train_lda_mllt.sh: Initializing the model
+steps/train_lda_mllt.sh: Converting alignments from exp/tri3_ali to use current tree
+steps/train_lda_mllt.sh: Compiling graphs of transcripts
+Training pass 1
+Training pass 2
+steps/train_lda_mllt.sh: Estimating MLLT
+Training pass 3
+Training pass 4
+steps/train_lda_mllt.sh: Estimating MLLT
+Training pass 5
+Training pass 6
+steps/train_lda_mllt.sh: Estimating MLLT
+Training pass 7
+Training pass 8
+Training pass 9
+Training pass 10
+Aligning data
+Training pass 11
+Training pass 12
+steps/train_lda_mllt.sh: Estimating MLLT
+Training pass 13
+Training pass 14
+Training pass 15
+Training pass 16
+Training pass 17
+Training pass 18
+Training pass 19
+Training pass 20
+Aligning data
+Training pass 21
+Training pass 22
+Training pass 23
+Training pass 24
+Training pass 25
+Training pass 26
+Training pass 27
+Training pass 28
+Training pass 29
+Training pass 30
+Aligning data
+Training pass 31
+Training pass 32
+Training pass 33
+Training pass 34
+steps/diagnostic/analyze_alignments.sh --cmd run.pl data/langp/tri3 exp/tri4
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 17.0365296804% of the time at utterance begin.  This may not be optimal.
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 68.7853881279% of the time at utterance end.  This may not be optimal.
+steps/diagnostic/analyze_alignments.sh: see stats in exp/tri4/log/analyze_alignments.log
+1 warnings in exp/tri4/log/compile_questions.log
+903 warnings in exp/tri4/log/acc.*.*.log
+2 warnings in exp/tri4/log/analyze_alignments.log
+1 warnings in exp/tri4/log/build_tree.log
+633 warnings in exp/tri4/log/update.*.log
+42 warnings in exp/tri4/log/lda_acc.*.log
+1798 warnings in exp/tri4/log/align.*.*.log
+843 warnings in exp/tri4/log/init_model.log
+exp/tri4: nj=32 align prob=-39.29 over 38.29h [retry=1.8%, fail=0.1%] states=6632 gauss=80180 tree-impr=4.90 lda-sum=14.00 mllt:impr,logdet=1.00,1.73
+steps/train_lda_mllt.sh: Done training system with LDA+MLLT features in exp/tri4
+steps/get_prons.sh --cmd run.pl data/train data/lang exp/tri4
+steps/get_prons.sh: exp/tri4/ali.1.gz exists, so starting from alignments.
+steps/get_prons.sh: done writing prons to exp/tri4/prons.*.gz, silence counts in 
+steps/get_prons.sh: exp/tri4/sil_counts_nowb.txt and pronunciation counts in 
+steps/get_prons.sh: exp/tri4/pron_counts.{int,txt}
+steps/get_prons.sh: ... and also in exp/tri4/pron_counts_nowb.txt
+Checking data/local/silence_phones.txt ...
+--> reading data/local/silence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/silence_phones.txt is OK
+
+Checking data/local/optional_silence.txt ...
+--> reading data/local/optional_silence.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/optional_silence.txt is OK
+
+Checking data/local/nonsilence_phones.txt ...
+--> reading data/local/nonsilence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/nonsilence_phones.txt is OK
+
+Checking disjoint: silence_phones.txt, nonsilence_phones.txt
+--> disjoint property is OK.
+
+Checking data/local/lexicon.txt
+--> reading data/local/lexicon.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/lexicon.txt is OK
+
+Checking data/local/lexiconp.txt
+--> reading data/local/lexiconp.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/lexiconp.txt is OK
+
+Checking lexicon pair data/local/lexicon.txt and data/local/lexiconp.txt
+--> lexicon pair data/local/lexicon.txt and data/local/lexiconp.txt match
+
+Checking data/local/extra_questions.txt ...
+--> reading data/local/extra_questions.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/extra_questions.txt is OK
+--> SUCCESS [validating dictionary directory data/local]
+
+utils/dict_dir_add_pronprobs.sh: normalizing pronprobs so maximum is 1 for each word.
+utils/dict_dir_add_pronprobs.sh: produced dictionary directory with probabilities in data/local/dictp/tri4/
+utils/dict_dir_add_pronprobs.sh: validating data/local/dictp/tri4 ..
+Checking data/local/dictp/tri4/silence_phones.txt ...
+--> reading data/local/dictp/tri4/silence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri4/silence_phones.txt is OK
+
+Checking data/local/dictp/tri4/optional_silence.txt ...
+--> reading data/local/dictp/tri4/optional_silence.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri4/optional_silence.txt is OK
+
+Checking data/local/dictp/tri4/nonsilence_phones.txt ...
+--> reading data/local/dictp/tri4/nonsilence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri4/nonsilence_phones.txt is OK
+
+Checking disjoint: silence_phones.txt, nonsilence_phones.txt
+--> disjoint property is OK.
+
+Checking data/local/dictp/tri4/lexicon.txt
+--> reading data/local/dictp/tri4/lexicon.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri4/lexicon.txt is OK
+
+Checking data/local/dictp/tri4/lexiconp.txt
+--> reading data/local/dictp/tri4/lexiconp.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri4/lexiconp.txt is OK
+
+Checking data/local/dictp/tri4/lexiconp_silprob.txt
+--> reading data/local/dictp/tri4/lexiconp_silprob.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri4/lexiconp_silprob.txt is OK
+
+Checking lexicon pair data/local/dictp/tri4/lexicon.txt and data/local/dictp/tri4/lexiconp.txt
+--> lexicon pair data/local/dictp/tri4/lexicon.txt and data/local/dictp/tri4/lexiconp.txt match
+
+Checking lexicon pair data/local/dictp/tri4/lexiconp.txt and data/local/dictp/tri4/lexiconp_silprob.txt
+--> lexicon pair data/local/dictp/tri4/lexiconp.txt and data/local/dictp/tri4/lexiconp_silprob.txt match
+
+Checking data/local/dictp/tri4/extra_questions.txt ...
+--> reading data/local/dictp/tri4/extra_questions.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri4/extra_questions.txt is OK
+--> SUCCESS [validating dictionary directory data/local/dictp/tri4]
+
+Some low-probability prons include: 
+# sort -k2,2 -n data/local/dictp/tri4/lexiconp.txt  | head -n 8
+广州 0.0123457 gw_2 O:_2 N_2 dz_1 6w_1
+过嚟 0.0149254 gw_3 O:_3 l_4 6j_4
+<hes> 0.0160075 6_6 m_6
+过年 0.0217391 gw_3 O:_3 l_4 i:_4 n_4
+过年 0.0217391 gw_3 O:_3 n_4 i:_4 n_4
+呢边 0.0285714 n_4 ej_4 b_1 i:_1 n_1
+过去 0.0285715 gw_3 O:_3 h_3 9y_3
+过来 0.0294117 gw_3 O:_3 l_4 O:j_4
+utils/prepare_lang.sh --phone-symbol-table data/lang/phones.txt --share-silence-phones true data/local/dictp/tri4 <unk> data/local/langp/tri4 data/langp/tri4
+Checking data/local/dictp/tri4/silence_phones.txt ...
+--> reading data/local/dictp/tri4/silence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri4/silence_phones.txt is OK
+
+Checking data/local/dictp/tri4/optional_silence.txt ...
+--> reading data/local/dictp/tri4/optional_silence.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri4/optional_silence.txt is OK
+
+Checking data/local/dictp/tri4/nonsilence_phones.txt ...
+--> reading data/local/dictp/tri4/nonsilence_phones.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri4/nonsilence_phones.txt is OK
+
+Checking disjoint: silence_phones.txt, nonsilence_phones.txt
+--> disjoint property is OK.
+
+Checking data/local/dictp/tri4/lexicon.txt
+--> reading data/local/dictp/tri4/lexicon.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri4/lexicon.txt is OK
+
+Checking data/local/dictp/tri4/lexiconp.txt
+--> reading data/local/dictp/tri4/lexiconp.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri4/lexiconp.txt is OK
+
+Checking data/local/dictp/tri4/lexiconp_silprob.txt
+--> reading data/local/dictp/tri4/lexiconp_silprob.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri4/lexiconp_silprob.txt is OK
+
+Checking lexicon pair data/local/dictp/tri4/lexicon.txt and data/local/dictp/tri4/lexiconp.txt
+--> lexicon pair data/local/dictp/tri4/lexicon.txt and data/local/dictp/tri4/lexiconp.txt match
+
+Checking lexicon pair data/local/dictp/tri4/lexiconp.txt and data/local/dictp/tri4/lexiconp_silprob.txt
+--> lexicon pair data/local/dictp/tri4/lexiconp.txt and data/local/dictp/tri4/lexiconp_silprob.txt match
+
+Checking data/local/dictp/tri4/extra_questions.txt ...
+--> reading data/local/dictp/tri4/extra_questions.txt
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/local/dictp/tri4/extra_questions.txt is OK
+--> SUCCESS [validating dictionary directory data/local/dictp/tri4]
+
+fstaddselfloops data/langp/tri4/phones/wdisambig_phones.int data/langp/tri4/phones/wdisambig_words.int 
+prepare_lang.sh: validating output directory
+utils/validate_lang.pl data/langp/tri4
+Checking data/langp/tri4/phones.txt ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/langp/tri4/phones.txt is OK
+
+Checking words.txt: #0 ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> data/langp/tri4/words.txt is OK
+
+Checking disjoint: silence.txt, nonsilence.txt, disambig.txt ...
+--> silence.txt and nonsilence.txt are disjoint
+--> silence.txt and disambig.txt are disjoint
+--> disambig.txt and nonsilence.txt are disjoint
+--> disjoint property is OK
+
+Checking sumation: silence.txt, nonsilence.txt, disambig.txt ...
+--> found no unexplainable phones in phones.txt
+
+Checking data/langp/tri4/phones/context_indep.{txt, int, csl} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 20 entry/entries in data/langp/tri4/phones/context_indep.txt
+--> data/langp/tri4/phones/context_indep.int corresponds to data/langp/tri4/phones/context_indep.txt
+--> data/langp/tri4/phones/context_indep.csl corresponds to data/langp/tri4/phones/context_indep.txt
+--> data/langp/tri4/phones/context_indep.{txt, int, csl} are OK
+
+Checking data/langp/tri4/phones/nonsilence.{txt, int, csl} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 856 entry/entries in data/langp/tri4/phones/nonsilence.txt
+--> data/langp/tri4/phones/nonsilence.int corresponds to data/langp/tri4/phones/nonsilence.txt
+--> data/langp/tri4/phones/nonsilence.csl corresponds to data/langp/tri4/phones/nonsilence.txt
+--> data/langp/tri4/phones/nonsilence.{txt, int, csl} are OK
+
+Checking data/langp/tri4/phones/silence.{txt, int, csl} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 20 entry/entries in data/langp/tri4/phones/silence.txt
+--> data/langp/tri4/phones/silence.int corresponds to data/langp/tri4/phones/silence.txt
+--> data/langp/tri4/phones/silence.csl corresponds to data/langp/tri4/phones/silence.txt
+--> data/langp/tri4/phones/silence.{txt, int, csl} are OK
+
+Checking data/langp/tri4/phones/optional_silence.{txt, int, csl} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 1 entry/entries in data/langp/tri4/phones/optional_silence.txt
+--> data/langp/tri4/phones/optional_silence.int corresponds to data/langp/tri4/phones/optional_silence.txt
+--> data/langp/tri4/phones/optional_silence.csl corresponds to data/langp/tri4/phones/optional_silence.txt
+--> data/langp/tri4/phones/optional_silence.{txt, int, csl} are OK
+
+Checking data/langp/tri4/phones/disambig.{txt, int, csl} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 10 entry/entries in data/langp/tri4/phones/disambig.txt
+--> data/langp/tri4/phones/disambig.int corresponds to data/langp/tri4/phones/disambig.txt
+--> data/langp/tri4/phones/disambig.csl corresponds to data/langp/tri4/phones/disambig.txt
+--> data/langp/tri4/phones/disambig.{txt, int, csl} are OK
+
+Checking data/langp/tri4/phones/roots.{txt, int} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 38 entry/entries in data/langp/tri4/phones/roots.txt
+--> data/langp/tri4/phones/roots.int corresponds to data/langp/tri4/phones/roots.txt
+--> data/langp/tri4/phones/roots.{txt, int} are OK
+
+Checking data/langp/tri4/phones/sets.{txt, int} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 38 entry/entries in data/langp/tri4/phones/sets.txt
+--> data/langp/tri4/phones/sets.int corresponds to data/langp/tri4/phones/sets.txt
+--> data/langp/tri4/phones/sets.{txt, int} are OK
+
+Checking data/langp/tri4/phones/extra_questions.{txt, int} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 16 entry/entries in data/langp/tri4/phones/extra_questions.txt
+--> data/langp/tri4/phones/extra_questions.int corresponds to data/langp/tri4/phones/extra_questions.txt
+--> data/langp/tri4/phones/extra_questions.{txt, int} are OK
+
+Checking data/langp/tri4/phones/word_boundary.{txt, int} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 876 entry/entries in data/langp/tri4/phones/word_boundary.txt
+--> data/langp/tri4/phones/word_boundary.int corresponds to data/langp/tri4/phones/word_boundary.txt
+--> data/langp/tri4/phones/word_boundary.{txt, int} are OK
+
+Checking optional_silence.txt ...
+--> reading data/langp/tri4/phones/optional_silence.txt
+--> data/langp/tri4/phones/optional_silence.txt is OK
+
+Checking disambiguation symbols: #0 and #1
+--> data/langp/tri4/phones/disambig.txt has "#0" and "#1"
+--> data/langp/tri4/phones/disambig.txt is OK
+
+Checking topo ...
+
+Checking word_boundary.txt: silence.txt, nonsilence.txt, disambig.txt ...
+--> data/langp/tri4/phones/word_boundary.txt doesn't include disambiguation symbols
+--> data/langp/tri4/phones/word_boundary.txt is the union of nonsilence.txt and silence.txt
+--> data/langp/tri4/phones/word_boundary.txt is OK
+
+Checking word-level disambiguation symbols...
+--> data/langp/tri4/phones/wdisambig.txt exists (newer prepare_lang.sh)
+Checking word_boundary.int and disambig.int
+--> generating a 95 word sequence
+--> resulting phone sequence from L.fst corresponds to the word sequence
+--> L.fst is OK
+--> generating a 24 word sequence
+--> resulting phone sequence from L_disambig.fst corresponds to the word sequence
+--> L_disambig.fst is OK
+
+Checking data/langp/tri4/oov.{txt, int} ...
+--> text seems to be UTF-8 or ASCII, checking whitespaces
+--> text contains only allowed whitespaces
+--> 1 entry/entries in data/langp/tri4/oov.txt
+--> data/langp/tri4/oov.int corresponds to data/langp/tri4/oov.txt
+--> data/langp/tri4/oov.{txt, int} are OK
+
+--> data/langp/tri4/L.fst is olabel sorted
+--> data/langp/tri4/L_disambig.fst is olabel sorted
+--> SUCCESS [validating lang directory data/langp/tri4]
+steps/align_si.sh --boost-silence 1.5 --nj 32 --cmd run.pl data/train data/langp/tri4 exp/tri4 exp/tri4_ali
+steps/align_si.sh: feature type is lda
+steps/align_si.sh: aligning data in data/train using model from exp/tri4, putting alignments in exp/tri4_ali
+steps/diagnostic/analyze_alignments.sh --cmd run.pl data/langp/tri4 exp/tri4_ali
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 16.6712328767% of the time at utterance begin.  This may not be optimal.
+analyze_phone_length_stats.py: WARNING: optional-silence SIL is seen only 68.0547945205% of the time at utterance end.  This may not be optimal.
+steps/diagnostic/analyze_alignments.sh: see stats in exp/tri4_ali/log/analyze_alignments.log
+steps/align_si.sh: done aligning data.
+run-1-main-aishell2_bab.sh succeeded

@@ -1,0 +1,53 @@
+local/chain/run_tdnn_aishell2_bab.sh --stage 17
+iVector preparation done.
+local/chain/run_tdnn_aishell2_bab.sh: Create neural net configs using the xconfig parser for
+ generating new layers, that are specific to rm. These layers 
+ are added to the transferred part of the wsj network.
+steps/nnet3/xconfig_to_configs.py --existing-model ../../aishell2/s5/exp/chain/tdnn_1b_all_sp/final.mdl --xconfig-file exp/chain/tdnn_aishell2_bab_1a/configs/network.xconfig --config-dir exp/chain/tdnn_aishell2_bab_1a/configs/
+nnet3-info ../../aishell2/s5/exp/chain/tdnn_1b_all_sp/final.mdl 
+nnet3-init ../../aishell2/s5/exp/chain/tdnn_1b_all_sp/final.mdl exp/chain/tdnn_aishell2_bab_1a/configs//ref.config exp/chain/tdnn_aishell2_bab_1a/configs//ref.raw 
+LOG (nnet3-init[5.5.66~2-c0e3]:main():nnet3-init.cc:68) Read raw neural net from ../../aishell2/s5/exp/chain/tdnn_1b_all_sp/final.mdl
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn9.dropout is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn10l is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn10.affine is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn10.relu is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn10.batchnorm is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn10.dropout is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn11l is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn11.affine is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn11.relu is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn11.batchnorm is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn11.dropout is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node prefinal-l is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node prefinal-chain.affine is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node prefinal-chain.relu is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node prefinal-chain.batchnorm is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node output.linear is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node prefinal-xent.affine is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node prefinal-xent.relu is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node prefinal-xent.batchnorm is never used to compute any output.
+WARNING (nnet3-init[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node output-xent.linear is never used to compute any output.
+LOG (nnet3-init[5.5.66~2-c0e3]:main():nnet3-init.cc:80) Initialized raw neural net and wrote it to exp/chain/tdnn_aishell2_bab_1a/configs//ref.raw
+nnet3-info exp/chain/tdnn_aishell2_bab_1a/configs//ref.raw 
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn9.dropout is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn10l is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn10.affine is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn10.relu is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn10.batchnorm is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn10.dropout is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn11l is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn11.affine is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn11.relu is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn11.batchnorm is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node tdnn11.dropout is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node prefinal-l is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node prefinal-chain.affine is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node prefinal-chain.relu is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node prefinal-chain.batchnorm is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node output.linear is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node prefinal-xent.affine is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node prefinal-xent.relu is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node prefinal-xent.batchnorm is never used to compute any output.
+WARNING (nnet3-info[5.5.66~2-c0e3]:Check():nnet-nnet.cc:789) Node output-xent.linear is never used to compute any output.
+nnet3-init ../../aishell2/s5/exp/chain/tdnn_1b_all_sp/final.mdl exp/chain/tdnn_aishell2_bab_1a/configs//ref.config exp/chain/tdnn_aishell2_bab_1a/configs//ref.raw 
+LOG (nnet3-init[5.5.66~2-c0e3]:main():nnet3-init.cc:68) Read raw neural net from ../../aishell2/s5/exp/chain/tdnn_1b_all_sp/final.mdl

@@ -1,0 +1,102 @@
+local/chain/tuning/run_tdnn_aishell2_bab_1a.sh --stage 17
+iVector preparation done.
+local/chain/tuning/run_tdnn_aishell2_bab_1a.sh: Create neural net configs using the xconfig parser for
+ generating new layers, that are specific to rm. These layers 
+ are added to the transferred part of the wsj network.
+steps/nnet3/xconfig_to_configs.py --existing-model ../../aishell2/s5/exp/chain/tdnn_1b_all_sp/final.mdl --xconfig-file exp/chain/tdnn_aishell2_bab_1a_lr0.25/configs/network.xconfig --config-dir exp/chain/tdnn_aishell2_bab_1a_lr0.25/configs/
+nnet3-info ../../aishell2/s5/exp/chain/tdnn_1b_all_sp/final.mdl 
+nnet3-init ../../aishell2/s5/exp/chain/tdnn_1b_all_sp/final.mdl exp/chain/tdnn_aishell2_bab_1a_lr0.25/configs//ref.config exp/chain/tdnn_aishell2_bab_1a_lr0.25/configs//ref.raw 
+LOG (nnet3-init[5.5.66~2-c0e3]:main():nnet3-init.cc:68) Read raw neural net from ../../aishell2/s5/exp/chain/tdnn_1b_all_sp/final.mdl
+LOG (nnet3-init[5.5.66~2-c0e3]:main():nnet3-init.cc:80) Initialized raw neural net and wrote it to exp/chain/tdnn_aishell2_bab_1a_lr0.25/configs//ref.raw
+nnet3-info exp/chain/tdnn_aishell2_bab_1a_lr0.25/configs//ref.raw 
+nnet3-init ../../aishell2/s5/exp/chain/tdnn_1b_all_sp/final.mdl exp/chain/tdnn_aishell2_bab_1a_lr0.25/configs//ref.config exp/chain/tdnn_aishell2_bab_1a_lr0.25/configs//ref.raw 
+LOG (nnet3-init[5.5.66~2-c0e3]:main():nnet3-init.cc:68) Read raw neural net from ../../aishell2/s5/exp/chain/tdnn_1b_all_sp/final.mdl
+LOG (nnet3-init[5.5.66~2-c0e3]:main():nnet3-init.cc:80) Initialized raw neural net and wrote it to exp/chain/tdnn_aishell2_bab_1a_lr0.25/configs//ref.raw
+nnet3-info exp/chain/tdnn_aishell2_bab_1a_lr0.25/configs//ref.raw 
+local/chain/tuning/run_tdnn_aishell2_bab_1a.sh: generate egs for chain to train new model on rm dataset.
+2018-12-16 18:40:54,217 [steps/nnet3/chain/train.py:33 - <module> - INFO ] Starting chain model trainer (train.py)
+2018-12-16 18:40:54,285 [steps/nnet3/chain/train.py:271 - train - INFO ] Arguments for the experiment
+{'alignment_subsampling_factor': 3,
+ 'apply_deriv_weights': False,
+ 'backstitch_training_interval': 1,
+ 'backstitch_training_scale': 0.0,
+ 'chunk_left_context': 0,
+ 'chunk_left_context_initial': -1,
+ 'chunk_right_context': 0,
+ 'chunk_right_context_final': -1,
+ 'chunk_width': '150,110,90',
+ 'cleanup': True,
+ 'cmvn_opts': '--norm-means=false --norm-vars=false',
+ 'combine_sum_to_one_penalty': 0.0,
+ 'command': 'run.pl',
+ 'compute_per_dim_accuracy': False,
+ 'deriv_truncate_margin': None,
+ 'dir': 'exp/chain/tdnn_aishell2_bab_1a_lr0.25',
+ 'do_final_combination': True,
+ 'dropout_schedule': None,
+ 'egs_command': None,
+ 'egs_dir': None,
+ 'egs_opts': '--frames-overlap-per-eg 0',
+ 'egs_stage': 0,
+ 'email': None,
+ 'exit_stage': None,
+ 'feat_dir': 'data/train_sp_hires',
+ 'final_effective_lrate': 0.0001,
+ 'frame_subsampling_factor': 3,
+ 'frames_per_iter': 1500000,
+ 'initial_effective_lrate': 0.001,
+ 'input_model': 'exp/chain/tdnn_aishell2_bab_1a_lr0.25/input.raw',
+ 'l2_regularize': 5e-05,
+ 'lat_dir': 'exp/chain/tri4_train_sp_lats',
+ 'leaky_hmm_coefficient': 0.1,
+ 'left_deriv_truncate': None,
+ 'left_tolerance': 5,
+ 'lm_opts': '--num-extra-lm-states=2000',
+ 'max_lda_jobs': 10,
+ 'max_models_combine': 20,
+ 'max_objective_evaluations': 30,
+ 'max_param_change': 2.0,
+ 'momentum': 0.0,
+ 'num_chunk_per_minibatch': '128',
+ 'num_epochs': 4.0,
+ 'num_jobs_final': 12,
+ 'num_jobs_initial': 2,
+ 'online_ivector_dir': 'exp/nnet3/ivectors_train_sp_hires/',
+ 'preserve_model_interval': 100,
+ 'presoftmax_prior_scale_power': -0.25,
+ 'proportional_shrink': 0.0,
+ 'rand_prune': 4.0,
+ 'remove_egs': False,
+ 'reporting_interval': 0.1,
+ 'right_tolerance': 5,
+ 'samples_per_iter': 400000,
+ 'shrink_saturation_threshold': 0.4,
+ 'shrink_value': 1.0,
+ 'shuffle_buffer_size': 5000,
+ 'srand': 0,
+ 'stage': -10,
+ 'train_opts': [],
+ 'tree_dir': 'exp/chain/tree_1a',
+ 'use_gpu': 'wait',
+ 'xent_regularize': 0.1}
+nnet3-info exp/chain/tdnn_aishell2_bab_1a_lr0.25/input.raw 
+2018-12-16 18:40:56,521 [steps/nnet3/chain/train.py:325 - train - INFO ] Creating phone language-model
+2018-12-16 18:41:33,793 [steps/nnet3/chain/train.py:330 - train - INFO ] Creating denominator FST
+copy-transition-model exp/chain/tree_1a/final.mdl exp/chain/tdnn_aishell2_bab_1a_lr0.25/0.trans_mdl 
+LOG (copy-transition-model[5.5.66~2-c0e3]:main():copy-transition-model.cc:62) Copied transition model.
+2018-12-16 18:43:13,120 [steps/nnet3/chain/train.py:359 - train - INFO ] Generating egs
+steps/nnet3/chain/get_egs.sh --frames-overlap-per-eg 0 --cmd run.pl --cmvn-opts --norm-means=false --norm-vars=false --online-ivector-dir exp/nnet3/ivectors_train_sp_hires/ --left-context 22 --right-context 25 --left-context-initial -1 --right-context-final -1 --left-tolerance 5 --right-tolerance 5 --frame-subsampling-factor 3 --alignment-subsampling-factor 3 --stage 0 --frames-per-iter 1500000 --frames-per-eg 150,110,90 --srand 0 data/train_sp_hires exp/chain/tdnn_aishell2_bab_1a_lr0.25 exp/chain/tri4_train_sp_lats exp/chain/tdnn_aishell2_bab_1a_lr0.25/egs
+File data/train_sp_hires/utt2uniq exists, so augmenting valid_uttlist to
+include all perturbed versions of the same 'real' utterances.
+steps/nnet3/chain/get_egs.sh: creating egs.  To ensure they are not deleted later you can do:  touch exp/chain/tdnn_aishell2_bab_1a_lr0.25/egs/.nodelete
+steps/nnet3/chain/get_egs.sh: feature type is raw
+tree-info exp/chain/tdnn_aishell2_bab_1a_lr0.25/tree 
+feat-to-dim scp:exp/nnet3/ivectors_train_sp_hires//ivector_online.scp - 
+steps/nnet3/chain/get_egs.sh: working out number of frames of training data
+steps/nnet3/chain/get_egs.sh: working out feature dim
+steps/nnet3/chain/get_egs.sh: creating 28 archives, each with 16588 egs, with
+steps/nnet3/chain/get_egs.sh:   150,110,90 labels per example, and (left,right) context = (22,25)
+steps/nnet3/chain/get_egs.sh: Getting validation and training subset examples in background.
+steps/nnet3/chain/get_egs.sh: Generating training examples on disk
+steps/nnet3/chain/get_egs.sh: recombining and shuffling order of archives on disk
+... Getting subsets of validation examples for diagnostics and combination.

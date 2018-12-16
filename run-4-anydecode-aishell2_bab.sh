@@ -1,0 +1,1 @@
+../s5d/run-4-anydecode-aishell2_bab.sh
