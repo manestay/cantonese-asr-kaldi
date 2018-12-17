@@ -19,18 +19,20 @@ affix=all
 stage=0
 train_stage=-10
 get_egs_stage=-10
-dir=exp/chain/tdnn_aishell2_bab_1a_lr1
+train_set=train_cleaned
+gmm=tri4_cleaned
+dir=exp/chain/tdnn_aishell2_bab_1a_lr0.25_cleaned
 xent_regularize=0.1
 chunk_width=150,110,90
+nnet3_affix=_cleaned
 
-
-gmm_dir=exp/tri4
-ali_dir=exp/tri4_ali_train_sp
-tree_dir=exp/chain/tree_1a
-lang=data/lang_chain_1a
-train_data_dir=data/train_sp_hires
-train_data_dir_lores=data/train_sp
-lat_dir=exp/chain/tri4_train_sp_lats
+gmm_dir=exp/$gmm
+ali_dir=exp/${gmm}_ali_${train_set}_sp
+tree_dir=exp/chain${nnet3_affix}/tree_1a
+lat_dir=exp/chain${nnet3_affix}/tri4${nnet3_affix}_train_sp_lats
+lang=data/lang_chain_cleaned_1a
+train_data_dir=data/${train_set}_sp_hires
+train_data_dir_lores=data/${train_set}_sp
 lang_dir=data/langp/tri4
 
 # configs for transfer learning
@@ -43,8 +45,8 @@ src_mfcc_config=../../aishell2/s5/conf/mfcc_hires.conf # mfcc config used to ext
 src_ivec_extractor_dir=../../aishell2/s5/exp/chain/extractor_all  # Source ivector extractor dir used to extract ivector for
                                                                   # source data. The ivector for target data is extracted using this extractor.
                          					  # It should be nonempty, if ivector is used in the source model training.
-common_egs_dir=
-primary_lr_factor=1.0 # The learning-rate factor for transferred layers from source
+common_egs_dir=exp/chain/tdnn_aishell2_bab_1a/egs
+primary_lr_factor=0.25 # The learning-rate factor for transferred layers from source
                        # model. e.g. if 0, the paramters transferred from source model
                        # are fixed.
                        # The learning-rate factor for new added layers is 1.0.
@@ -65,12 +67,12 @@ where "nvcc" is installed.
 EOF
 fi
 
-local/chain/run_ivector_common_aishell2_bab.sh --stage $stage
+local/chain/run_ivector_common_aishell2_bab.sh --stage $stage \
+                                  --nnet3-affix "$nnet3_affix"
+                                  --train-set $train_set \
+                                  --gmm $gmm
                                   # --nj $nj \
-                                  # --train-set $train_set \
-                                  # --gmm $gmm \
                                   # --num-threads-ubm $num_threads_ubm \
-                                  # --nnet3-affix "$nnet3_affix"
 
 required_files="$src_mfcc_config $src_mdl"
 use_ivector=false
@@ -187,10 +189,6 @@ EOF
 fi
 
 if [ $stage -le 18 ]; then
-  egs_dir=${dir}/egs
-  if [ !-d egs_dir ]; then
-    egs_dir=""
-  fi
   
   echo "$0: generate egs for chain to train new model on babel dataset."
 
@@ -224,7 +222,6 @@ if [ $stage -le 18 ]; then
     --tree-dir $tree_dir \
     --lat-dir $lat_dir \
     --dir $dir \
-    --egs.dir $egs_dir \
     --use-gpu wait
 fi
 
@@ -232,11 +229,11 @@ if [ $stage -le 19 ]; then
   # Note: it might appear that this $lang directory is mismatched, and it is as
   # far as the 'topo' is concerned, but this script doesn't read the 'topo' from
   # the lang directory.
-  ivec_opt=""
-  if $use_ivector;then
-    ivec_opt="--online-ivector-dir exp/nnet2${nnet_affix}/ivectors_test"
-  fi
-  utils/mkgraph.sh --self-loop-scale 1.0 data/langp/tri4 $dir $dir/graph
+  # ivec_opt=""
+  # if $use_ivector;then
+    # ivec_opt="--online-ivector-dir exp/nnet2${nnet_affix}/ivectors_test"
+  # fi
+  utils/mkgraph.sh --self-loop-scale 1.0 data/lang/ $dir $dir/graph
   # steps/nnet3/decode.sh --acwt 1.0 --post-decode-acwt 10.0 \
     # --scoring-opts "--min-lmwt 1" \
     # --nj 20 --cmd "$decode_cmd" $ivec_opt \

@@ -11,14 +11,14 @@ set -eu -o pipefail
 
 stage=0
 nj=30
-train_set=train   # you might set this to e.g. train.
-gmm=tri4          # This specifies a GMM-dir from the features
+train_set=train_cleaned   # you might set this to e.g. train.
+gmm=tri4_cleaned          # This specifies a GMM-dir from the features
                           # of the type you're training the system on;
                           # it should contain alignments for 'train_set'.
 langdir=data/langp/tri4_ali
 
 num_threads_ubm=12
-nnet3_affix=
+nnet3_affix=_cleaned
 
 . ./cmd.sh
 . ./path.sh
