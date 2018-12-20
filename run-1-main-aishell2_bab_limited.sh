@@ -2,6 +2,7 @@
 
 # This is not necessarily the top-level run.sh as it is in other directories.   see README.txt first.
 # modified to be similar to kaldi-trunk/egs/aishell2/s5/local/run_gmm.sh
+# 
 tri5_only=false
 sgmm5_only=false
 denlats_only=false
