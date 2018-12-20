@@ -9,16 +9,21 @@ set -eu -o pipefail
 
 # copied from libri-speech
 
+# Bryan Li (bl2557), Xinyue Wang (xw2368)
+# This script extracts the i-vectors, and does any necessary data processing for that as well.
+# It is usually called by a chain script (in local/chain/tuning).
+# See comments below for more detail.
+
 stage=0
 nj=30
-train_set=train_cleaned   # you might set this to e.g. train.
-gmm=tri4_cleaned          # This specifies a GMM-dir from the features
-                          # of the type you're training the system on;
-                          # it should contain alignments for 'train_set'.
+train_set=train   # you might set this to e.g. train.
+gmm=tri4          # This specifies a GMM-dir from the features
+                  # of the type you're training the system on;
+                  # it should contain alignments for 'train_set'.
 langdir=data/langp/tri4_ali
 
 num_threads_ubm=12
-nnet3_affix=_cleaned
+nnet3_affix=
 
 . ./cmd.sh
 . ./path.sh

@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# Bryan Li (bl2557), Xinyue Wang (xw2368)
+# This script decodes a chain model.
+# Our contributions detailed in comments below.
+
 set -e
 set -o pipefail
 
@@ -6,18 +11,18 @@ set -o pipefail
 . ./lang.conf || exit 1;
 
 
-dir=dev2h.pem
+dir=dev2h.pem # change this to dev10h.pem for full dev set decoing
 kind=
 data_only=false
 fast_path=true
 skip_stt=false
-skip_kws=true
+skip_kws=true # not doing keyword search task
 skip_scoring=false
 cer=1
 tri5_only=false
 wip=0.5
 my_nj=30
-chain_model=chain/tdnn_aishell2_bab_1a_lr1.0
+chain_model=chain/tdnn_aishell2_bab_1a_lr1.0 # change this to the chain directory you wish to decode
 is_rnn=false
 extra_left_context=40
 extra_right_context=40
@@ -184,16 +189,6 @@ if  [ ! -f ${dataset_dir}_hires/.mfcc.done ]; then
   touch ${dataset_dir}_hires/.done
 fi
 
-# if [ -f exp/nnet3/extractor/final.ie ] && \
-  # [ ! -f exp/nnet3/ivectors_$(basename $dataset_dir)/.done ] ;  then
-  # dataset=$(basename $dataset_dir)
-
-  # steps/online/nnet2/extract_ivectors_online.sh --cmd "$train_cmd" --nj $my_nj \
-    # ${dataset_dir}_hires exp/nnet3/extractor exp/nnet3/ivectors_$dataset || exit 1;
-
-  # touch exp/nnet3/ivectors_$dataset/.done
-# fi
-
 ####################################################################
 ##
 ## chain model decoding
@@ -234,6 +229,7 @@ if [ -f exp/$chain_model/final.mdl ]; then
     touch $decode/.done
   fi
   
+  # CER=1 to get CER
   local/run_kws_stt_task2.sh --cer $cer --max-states $max_states \
     --skip-scoring false --extra-kws false --wip $wip \
     --cmd "$decode_cmd" --skip-kws true --skip-stt $skip_stt  \
@@ -244,6 +240,7 @@ else
   echo "no chain model exp/$chain_model"
 fi
 
+# print best CER and WER to console
 echo "Best CER"
 grep Sum exp/${chain_model}/decode_dev2h.pem/score_*/*pem.char.ctm.sys | utils/best_wer.sh
 echo "Best WER"

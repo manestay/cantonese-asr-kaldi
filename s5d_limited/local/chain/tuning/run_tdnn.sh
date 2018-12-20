@@ -16,6 +16,9 @@
 #                  xent:train/valid[55,84,final]=(-2.44,-2.32,-2.32/-2.63,-2.57,-2.56)
 #                  logprob:train/valid[55,84,final]=(-0.214,-0.192,-0.191/-0.281,-0.276,-0.275)
 
+# Bryan Li (bl2557), Xinyue Wang (xw2368)
+# This script runs the chain model. It is the same as the original BABEL script with slight modifications for our directory structure.
+# See comments below for more detail.
 
 set -e -o pipefail
 
@@ -24,7 +27,7 @@ set -e -o pipefail
 stage=0
 nj=30
 train_set=train_cleaned
-gmm=tri4_cleaned  # the gmm for the target data
+gmm=tri4_cleaned  # the gmm for the target data # only use up to tri4, as tri5_ali is not generated for our GMM model
 langdir=data/langp/tri4
 num_threads_ubm=12
 nnet3_affix=_cleaned  # cleanup affix for nnet3 and chain dirs, e.g. _cleaned
@@ -120,6 +123,8 @@ if [ $stage -le 16 ]; then
       --cmd "$train_cmd" 4000 ${lores_train_data_dir} data/lang_chain $ali_dir $tree_dir
 fi
 
+# same recipe as before. We tried setting this to the aishell2 recipe (with no transfer learning involved),
+# but found the chain model could not be decoded. The reason for this is discussed in our paper.
 xent_regularize=0.1
 if [ $stage -le 17 ]; then
   mkdir -p $dir

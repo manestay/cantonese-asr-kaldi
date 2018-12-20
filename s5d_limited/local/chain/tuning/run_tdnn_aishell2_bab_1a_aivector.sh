@@ -12,6 +12,11 @@
 # Training: The transferred layers are retrained with smaller learning-rate,
 # while new added layers are trained with larger learning rate using babel (cantonese) data.
 
+# Bryan Li (bl2557), Xinyue Wang (xw2368)
+# This script runs the chain model using aivectors. It is a bit outdated compared to run_tdnn_aishell2_bab_1a.sh,
+# but should still run fine.
+# See comments below (more detail in the other script run_tdnn_aishell2_bab_1a.sh).
+
 set -e
 
 # configs for 'chain'
@@ -65,6 +70,7 @@ where "nvcc" is installed.
 EOF
 fi
 
+# extract i-vectors from babel using aishell2 extractor
 local/chain/run_ivector_common_aishell2_bab_aextractor.sh --stage $stage
                                   # --nj $nj \
                                   # --train-set $train_set \
@@ -227,14 +233,8 @@ if [ $stage -le 19 ]; then
   # far as the 'topo' is concerned, but this script doesn't read the 'topo' from
   # the lang directory.
   ivec_opt=""
-  if $use_ivector;then
-    ivec_opt="--online-ivector-dir exp/nnet2${nnet_affix}/ivectors_test"
   fi
   utils/mkgraph.sh --self-loop-scale 1.0 data/lang $dir $dir/graph
-  # steps/nnet3/decode.sh --acwt 1.0 --post-decode-acwt 10.0 \
-    # --scoring-opts "--min-lmwt 1" \
-    # --nj 20 --cmd "$decode_cmd" $ivec_opt \
-    # $dir/graph data/test_hires $dir/decode || exit 1;
 fi
 wait;
 exit 0;

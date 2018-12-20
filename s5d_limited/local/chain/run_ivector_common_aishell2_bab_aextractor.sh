@@ -9,6 +9,11 @@ set -eu -o pipefail
 
 # copied from libri-speech
 
+# Bryan Li (bl2557), Xinyue Wang (xw2368)
+# This script extracts the i-vectors using the extractor from AISHELL2, and does any necessary data processing for that as well.
+# It is usually called by a chain script (in local/chain/tuning).
+# See comments below for more detail.
+
 stage=0
 nj=30
 train_set=train   # you might set this to e.g. train.

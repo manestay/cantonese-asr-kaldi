@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# Bryan Li (bl2557), Xinyue Wang (xw2368)
+# This script decodes the final LDA+MLLT (tri4) alignment.
+# Our contributions detailed in comments below.
+
 set -e
 set -o pipefail
 
@@ -15,7 +20,7 @@ skip_stt=false
 skip_scoring=
 extra_kws=true
 vocab_kws=false
-tri5_only=false
+tri4_only=true # do not decode after tri4
 wip=0.5
 
 nnet3_model=nnet3/tdnn_sp
@@ -372,7 +377,7 @@ if [ ! -L ./data/langp_test.phn ]; then
   ln -s lang.phn data/langp_test.phn
 fi
 
-
+# tri4 is final, instead of tri5_ali
 decode=exp/tri4/decode_${dataset_id}
 if [ ! -f ${decode}/.done ]; then
   echo ---------------------------------------------------------------------
@@ -404,8 +409,14 @@ if ! $fast_path ; then
     ${dataset_dir} data/langp_test ${decode}.si
 fi
 
-if $tri5_only; then
-  echo "--tri5-only is true. So exiting."
+# print best CER and WER to console
+echo "Best CER"
+grep Sum ${decode}/score_*/*pem.char.ctm.sys | utils/best_wer.sh
+echo "Best WER"
+grep Sum ${decode}/score_*/*pem.ctm.sys | utils/best_wer.sh
+
+if $tri4_only; then
+  echo "--tri4-only is true. So exiting."
   exit 0
 fi
 

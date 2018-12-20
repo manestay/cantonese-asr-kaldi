@@ -12,6 +12,10 @@
 # Training: The transferred layers are retrained with smaller learning-rate,
 # while new added layers are trained with larger learning rate using babel (cantonese) data.
 
+# Bryan Li (bl2557), Xinyue Wang (xw2368)
+# This script runs the chain model.
+# See comments below for more detail.
+
 set -e
 
 # configs for 'chain'
@@ -22,7 +26,7 @@ get_egs_stage=-10
 nnet3_affix=
 train_set=train${nnet3_affix}
 gmm=tri4${nnet3_affix}
-dir=exp/chain/tdnn_aishell2_bab_1a_lr1.0
+dir=exp/chain/tdnn_aishell2_bab_1a_lr1.0 # remember to change for different runs
 xent_regularize=0.1
 chunk_width=150,110,90
 
@@ -33,25 +37,25 @@ lat_dir=exp/chain${nnet3_affix}/tri4${nnet3_affix}_train_sp_lats
 lang=data/lang_chain${nnet3_affix}_1a
 train_data_dir=data/${train_set}_sp_hires
 train_data_dir_lores=data/${train_set}_sp
-lang_dir=data/langp/tri4
+lang_dir=data/langp/tri4 # instead of tri5_ali
 
 # configs for transfer learning
 src_mdl=../../aishell2/s5/exp/chain/tdnn_1b_all_sp/final.mdl # input chain model
 							     # trained on aishell2
-							     # This model is transfered to th etarget domain
+							     # This model is transfered to the target domain
 src_mfcc_config=../../aishell2/s5/conf/mfcc_hires.conf # mfcc config used to extract higher dim
                                                        # mfcc features for ivector and DNN training
                                                        # in the source domain.
 src_ivec_extractor_dir=../../aishell2/s5/exp/chain/extractor_all  # Source ivector extractor dir used to extract ivector for
                                                                   # source data. The ivector for target data is extracted using this extractor.
                          					  # It should be nonempty, if ivector is used in the source model training.
-common_egs_dir=exp/chain/tdnn_aishell2_bab_1a_lr0.25/egs
-#common_egs_dir=exp/chain/tdnn_aishell2_bab_1a_lr0.25/egs
+common_egs_dir=
+#common_egs_dir=exp/chain/tdnn_aishell2_bab_1a_lr0.25/egs # uncomment to use old examples, instead of regenerating new ones
 primary_lr_factor=0.25 # The learning-rate factor for transferred layers from source
                        # model. e.g. if 0, the paramters transferred from source model
                        # are fixed.
                        # The learning-rate factor for new added layers is 1.0.
-# nnet_affix=_online_aishell2
+
 # End configuration section
 
 echo "$0 $@"  # Print the command line for logging
@@ -130,7 +134,6 @@ if [ $stage -le 15 ]; then
   else
     rm -r $lang 2>/dev/null || true
     cp -r $lang_dir $lang
-    # cp -r data/langp/tri4_ali $lang
     silphonelist=$(cat $lang/phones/silence.csl) || exit 1;
     nonsilphonelist=$(cat $lang/phones/nonsilence.csl) || exit 1;
     # Use our special topology... note that later on may have to tune this
@@ -150,10 +153,12 @@ if [ $stage -le 16 ]; then
     --cmd "$train_cmd" 5000 $train_data_dir_lores $lang $ali_dir $tree_dir || exit 1;
 fi
 
+# this section contains the config file for transfer learning. tdnn1 - tdnn9 are transferred and learned at the set lr.
+# tdnn10 to output layers are initialized to 0 and learned at lr=1.0.
 if [ $stage -le 17 ]; then
   echo "$0: Create neural net configs using the xconfig parser for";
-  echo " generating new layers, that are specific to rm. These layers ";
-  echo " are added to the transferred part of the wsj network.";
+  echo " generating new layers, that are specific to babel. These layers ";
+  echo " are added to the transferred part of the aishell2 network.";
   num_targets=$(tree-info --print-args=false $tree_dir/tree |grep num-pdfs|awk '{print $2}')
   learning_rate_factor=$(echo "print 0.5/$xent_regularize" | python)
   opts="l2-regularize=0.002"
@@ -194,7 +199,6 @@ if [ $stage -le 18 ]; then
   echo "$0: generate egs for chain to train new model on babel dataset."
 
   ivector_dir=
-  # if $use_ivector; then ivector_dir="exp/nnet2${nnet_affix}/ivectors" ; fi
   if $use_ivector; then ivector_dir="exp/nnet3${nnet_affix}/ivectors_${train_set}_sp_hires" ; fi
 
   steps/nnet3/chain/train.py --stage $train_stage \
@@ -235,10 +239,6 @@ if [ $stage -le 19 ]; then
     # ivec_opt="--online-ivector-dir exp/nnet2${nnet_affix}/ivectors_test"
   # fi
   utils/mkgraph.sh --self-loop-scale 1.0 data/lang/ $dir $dir/graph
-  # steps/nnet3/decode.sh --acwt 1.0 --post-decode-acwt 10.0 \
-    # --scoring-opts "--min-lmwt 1" \
-    # --nj 20 --cmd "$decode_cmd" $ivec_opt \
-    # $dir/graph data/test_hires $dir/decode || exit 1;
 fi
 wait;
 exit 0;

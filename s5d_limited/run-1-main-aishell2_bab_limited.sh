@@ -2,7 +2,11 @@
 
 # This is not necessarily the top-level run.sh as it is in other directories.   see README.txt first.
 # modified to be similar to kaldi-trunk/egs/aishell2/s5/local/run_gmm.sh
-# 
+
+# Bryan Li (bl2557), Xinyue Wang (xw2368)
+# This script runs the GMM model. It is based on the original BABEL one, but extracts the same features as AISHELL2 does.
+# Runs up to LDA+MLLT triphone alignment. See comments below for more detail.
+
 tri5_only=false
 sgmm5_only=false
 denlats_only=false
@@ -104,7 +108,7 @@ fi
 echo ---------------------------------------------------------------------
 echo "Starting mfcc feature extraction for data/train in mfcc on" `date`
 echo ---------------------------------------------------------------------
-
+# instead of PLP, extract MFCC
 if [ ! -f data/train/.mfcc.done ]; then
   if $use_pitch; then
     steps/make_mfcc_pitch.sh --pitch-config conf/pitch.conf --cmd "$train_cmd" --nj $train_nj data/train exp/make_mfcc/train mfcc
@@ -160,7 +164,8 @@ if [ ! -f exp/tri1/.done ]; then
   steps/align_si.sh \
     --boost-silence $boost_sil --nj 12 --cmd "$train_cmd" \
     data/train_sub2 data/lang exp/mono exp/mono_ali_sub2
-
+    
+  # change number of leaves to match AISHELL2
   steps/train_deltas.sh \
     --boost-silence $boost_sil --cmd "$train_cmd" 4000 32000 \
     data/train_sub2 data/lang exp/mono_ali_sub2 exp/tri1
@@ -177,6 +182,7 @@ if [ ! -f exp/tri2/.done ]; then
     --boost-silence $boost_sil --nj 24 --cmd "$train_cmd" \
     data/train_sub3 data/lang exp/tri1 exp/tri1_ali_sub3
 
+  # change number of leaves to match AISHELL2
   steps/train_deltas.sh \
     --boost-silence $boost_sil --cmd "$train_cmd" 7000 56000 \
     data/train_sub3 data/lang exp/tri1_ali_sub3 exp/tri2
@@ -195,7 +201,8 @@ if [ ! -f exp/tri3/.done ]; then
   steps/align_si.sh \
     --boost-silence $boost_sil --nj $train_nj --cmd "$train_cmd" \
     data/train data/langp/tri2 exp/tri2 exp/tri2_ali
-
+  
+  # change number of leaves to match AISHELL2
   steps/train_deltas.sh \
     --boost-silence $boost_sil --cmd "$train_cmd" \
     7000 56000 data/train data/langp/tri2 exp/tri2_ali exp/tri3
@@ -215,6 +222,7 @@ if [ ! -f exp/tri4/.done ]; then
     --boost-silence $boost_sil --nj $train_nj --cmd "$train_cmd" \
     data/train data/langp/tri3 exp/tri3 exp/tri3_ali
 
+  # change number of leaves to match AISHELL2
   steps/train_lda_mllt.sh \
     --boost-silence $boost_sil --cmd "$train_cmd" \
     10000 80000 data/train data/langp/tri3 exp/tri3_ali exp/tri4
