@@ -6,10 +6,10 @@ set -o pipefail
 . ./lang.conf || exit 1;
 
 
-dir=dev10h.pem
+dir=dev2h.pem
 kind=
 data_only=false
-fast_path=true
+fast_path=false
 skip_kws=true
 skip_stt=false
 skip_scoring=
@@ -148,14 +148,14 @@ set -u
 unset dir
 unset kind
 
-function make_plp {
+function make_mfcc {
   target=$1
   logdir=$2
   output=$3
   if $use_pitch; then
-    steps/make_plp_pitch.sh --cmd "$decode_cmd" --nj $my_nj $target $logdir $output
+    steps/make_mfcc_pitch.sh --cmd "$decode_cmd" --nj $my_nj $target $logdir $output
   else
-    steps/make_plp.sh --cmd "$decode_cmd" --nj $my_nj $target $logdir $output
+    steps/make_mfcc.sh --cmd "$decode_cmd" --nj $my_nj $target $logdir $output
   fi
   utils/fix_data_dir.sh $target
   steps/compute_cmvn_stats.sh $target $logdir $output
@@ -268,91 +268,91 @@ if [ ! -f  $dataset_dir/.done ] ; then
     exit 1
   fi
 
-  if [ ! -f ${dataset_dir}/.plp.done ]; then
+  if [ ! -f ${dataset_dir}/.mfcc.done ]; then
     echo ---------------------------------------------------------------------
     echo "Preparing ${dataset_kind} parametrization files in ${dataset_dir} on" `date`
     echo ---------------------------------------------------------------------
-    make_plp ${dataset_dir} exp/make_plp/${dataset_id} plp
-    touch ${dataset_dir}/.plp.done
+    make_mfcc ${dataset_dir} exp/make_mfcc/${dataset_id} mfcc
+    touch ${dataset_dir}/.mfcc.done
   fi
   touch $dataset_dir/.done
 fi
 
-if  [ ! -f ${dataset_dir}_hires/.mfcc.done ]; then
-  dataset=$(basename $dataset_dir)
-  echo ---------------------------------------------------------------------
-  echo "Preparing ${dataset_kind} MFCC features in  ${dataset_dir}_hires on "`date`
-  echo ---------------------------------------------------------------------
-  if [ ! -d ${dataset_dir}_hires ]; then
-    utils/copy_data_dir.sh data/$dataset data/${dataset}_hires
-  fi
+# if  [ ! -f ${dataset_dir}_hires/.mfcc.done ]; then
+  # dataset=$(basename $dataset_dir)
+  # echo ---------------------------------------------------------------------
+  # echo "Preparing ${dataset_kind} MFCC features in  ${dataset_dir}_hires on "`date`
+  # echo ---------------------------------------------------------------------
+  # if [ ! -d ${dataset_dir}_hires ]; then
+    # utils/copy_data_dir.sh data/$dataset data/${dataset}_hires
+  # fi
 
-  mfccdir=mfcc_hires
-  steps/make_mfcc_pitch_online.sh --nj $my_nj --mfcc-config conf/mfcc_hires.conf \
-      --cmd "$train_cmd" ${dataset_dir}_hires exp/make_mfcc_hires/$dataset $mfccdir;
-  steps/compute_cmvn_stats.sh data/${dataset}_hires exp/make_mfcc_hires/${dataset} $mfccdir;
-  utils/fix_data_dir.sh ${dataset_dir}_hires;
+  # mfccdir=mfcc_hires
+  # steps/make_mfcc_pitch_online.sh --nj $my_nj --mfcc-config conf/mfcc_hires.conf \
+      # --cmd "$train_cmd" ${dataset_dir}_hires exp/make_mfcc_hires/$dataset $mfccdir;
+  # steps/compute_cmvn_stats.sh data/${dataset}_hires exp/make_mfcc_hires/${dataset} $mfccdir;
+  # utils/fix_data_dir.sh ${dataset_dir}_hires;
 
-  utils/data/limit_feature_dim.sh 0:39 \
-    data/${dataset}_hires data/${dataset}_hires_nopitch || exit 1;
-  steps/compute_cmvn_stats.sh \
-    data/${dataset}_hires_nopitch exp/make_hires/${dataset}_nopitch $mfccdir || exit 1;
-  utils/fix_data_dir.sh data/${dataset}_hires_nopitch
-  touch ${dataset_dir}_hires/.mfcc.done
+  # utils/data/limit_feature_dim.sh 0:39 \
+    # data/${dataset}_hires data/${dataset}_hires_nopitch || exit 1;
+  # steps/compute_cmvn_stats.sh \
+    # data/${dataset}_hires_nopitch exp/make_hires/${dataset}_nopitch $mfccdir || exit 1;
+  # utils/fix_data_dir.sh data/${dataset}_hires_nopitch
+  # touch ${dataset_dir}_hires/.mfcc.done
 
-  touch ${dataset_dir}_hires/.done
-fi
+  # touch ${dataset_dir}_hires/.done
+# fi
 
-if [ -f exp/nnet3/extractor/final.ie ] && \
-  [ ! -f exp/nnet3/ivectors_$(basename $dataset_dir)/.done ] ;  then
-  dataset=$(basename $dataset_dir)
+# if [ -f exp/nnet3/extractor/final.ie ] && \
+  # [ ! -f exp/nnet3/ivectors_$(basename $dataset_dir)/.done ] ;  then
+  # dataset=$(basename $dataset_dir)
 
-  steps/online/nnet2/extract_ivectors_online.sh --cmd "$train_cmd" --nj $my_nj \
-    ${dataset_dir}_hires exp/nnet3/extractor exp/nnet3/ivectors_$dataset || exit 1;
+  # steps/online/nnet2/extract_ivectors_online.sh --cmd "$train_cmd" --nj $my_nj \
+    # ${dataset_dir}_hires exp/nnet3/extractor exp/nnet3/ivectors_$dataset || exit 1;
 
-  touch exp/nnet3/ivectors_$dataset/.done
-fi
+  # touch exp/nnet3/ivectors_$dataset/.done
+# fi
 
-#####################################################################
-#
+####################################################################
+
 # KWS data directory preparation
-#
-#####################################################################
-echo ---------------------------------------------------------------------
-echo "Preparing kws data files in ${dataset_dir} on" `date`
-echo ---------------------------------------------------------------------
-lang=data/lang
-if [ ! -f data/dev10h.pem/.done.kws.dev ] ; then
-  if ! $skip_kws  ; then
-    if  $extra_kws ; then
-      L1_lex=data/local/lexiconp.txt
-      . ./local/datasets/extra_kws.sh || exit 1
-    fi
-    if  $vocab_kws ; then
-      . ./local/datasets/vocab_kws.sh || exit 1
-    fi
-    if [ ! -f data/lang.phn/G.fst ] ; then
-      ./local/syllab/run_phones.sh --stage -2 ${dataset_dir}
-    else
-      ./local/syllab/run_phones.sh ${dataset_dir}
-    fi
 
-    if [ ! -f data/lang.syll/G.fst ] ; then
-      ./local/syllab/run_syllabs.sh --stage -2  ${dataset_dir}
-    else
-      ./local/syllab/run_syllabs.sh ${dataset_dir}
-    fi
+####################################################################
+# echo ---------------------------------------------------------------------
+# echo "Preparing kws data files in ${dataset_dir} on" `date`
+# echo ---------------------------------------------------------------------
+# lang=data/lang
+# if [ ! -f data/dev10h.pem/.done.kws.dev ] ; then
+  # if ! $skip_kws  ; then
+    # if  $extra_kws ; then
+      # L1_lex=data/local/lexiconp.txt
+      # . ./local/datasets/extra_kws.sh || exit 1
+    # fi
+    # if  $vocab_kws ; then
+      # . ./local/datasets/vocab_kws.sh || exit 1
+    # fi
+    # if [ ! -f data/lang.phn/G.fst ] ; then
+      # ./local/syllab/run_phones.sh --stage -2 ${dataset_dir}
+    # else
+      # ./local/syllab/run_phones.sh ${dataset_dir}
+    # fi
 
-    ./local/search/run_search.sh --dir ${dataset_dir##*/}
-    ./local/search/run_phn_search.sh --dir ${dataset_dir##*/}
-    ./local/search/run_syll_search.sh --dir ${dataset_dir##*/}
-  fi
-fi
+    # if [ ! -f data/lang.syll/G.fst ] ; then
+      # ./local/syllab/run_syllabs.sh --stage -2  ${dataset_dir}
+    # else
+      # ./local/syllab/run_syllabs.sh ${dataset_dir}
+    # fi
 
-if $data_only ; then
-  echo "Exiting, as data-only was requested..."
-  exit 0;
-fi
+    # ./local/search/run_search.sh --dir ${dataset_dir##*/}
+    # ./local/search/run_phn_search.sh --dir ${dataset_dir##*/}
+    # ./local/search/run_syll_search.sh --dir ${dataset_dir##*/}
+  # fi
+# fi
+
+# if $data_only ; then
+  # echo "Exiting, as data-only was requested..."
+  # exit 0;
+# fi
 
 ####################################################################
 ##
@@ -360,7 +360,7 @@ fi
 ##
 ####################################################################
 if [ ! -f data/langp_test/.done ]; then
-  cp -R data/langp/tri5_ali/ data/langp_test
+  cp -R data/langp/tri4/ data/langp_test
   cp data/lang/G.fst data/langp_test
   touch data/langp_test/.done
 fi
@@ -373,31 +373,31 @@ if [ ! -L ./data/langp_test.phn ]; then
 fi
 
 
-decode=exp/tri5/decode_${dataset_id}
+decode=exp/tri4/decode_${dataset_id}
 if [ ! -f ${decode}/.done ]; then
   echo ---------------------------------------------------------------------
   echo "Spawning decoding with SAT models  on" `date`
   echo ---------------------------------------------------------------------
   utils/mkgraph.sh \
-    data/langp_test exp/tri5 exp/tri5/graph |tee exp/tri5/mkgraph.log
+    data/langp_test exp/tri4 exp/tri4/graph |tee exp/tri4/mkgraph.log
 
   mkdir -p $decode
   #By default, we do not care about the lattices for this step -- we just want the transforms
   #Therefore, we will reduce the beam sizes, to reduce the decoding times
   steps/decode_fmllr_extra.sh --skip-scoring true --beam 10 --lattice-beam 4\
     --nj $my_nj --cmd "$decode_cmd" "${decode_extra_opts[@]}"\
-    exp/tri5/graph ${dataset_dir} ${decode} |tee ${decode}/decode.log
+    exp/tri4/graph ${dataset_dir} ${decode} |tee ${decode}/decode.log
   touch ${decode}/.done
 fi
 
 if ! $fast_path ; then
-  local/run_kws_stt_task2.sh --cer $cer --max-states $max_states \
+  local/run_kws_stt_task2.sh --cer 1 --max-states $max_states \
     --skip-scoring $skip_scoring --extra-kws $extra_kws --wip $wip \
     --cmd "$decode_cmd" --skip-kws $skip_kws --skip-stt $skip_stt \
     "${lmwt_plp_extra_opts[@]}" \
     ${dataset_dir} data/langp_test ${decode}
 
-  local/run_kws_stt_task2.sh --cer $cer --max-states $max_states \
+  local/run_kws_stt_task2.sh --cer 1 --max-states $max_states \
     --skip-scoring $skip_scoring --extra-kws $extra_kws --wip $wip \
     --cmd "$decode_cmd" --skip-kws $skip_kws --skip-stt $skip_stt  \
     "${lmwt_plp_extra_opts[@]}" \

@@ -19,18 +19,18 @@ affix=all
 stage=0
 train_stage=-10
 get_egs_stage=-10
-train_set=train_cleaned
-gmm=tri4_cleaned
-dir=exp/chain/tdnn_aishell2_bab_1a_lr0.25_cleaned
+nnet3_affix=
+train_set=train${nnet3_affix}
+gmm=tri4${nnet3_affix}
+dir=exp/chain/tdnn_aishell2_bab_1a_lr1.0
 xent_regularize=0.1
 chunk_width=150,110,90
-nnet3_affix=_cleaned
 
 gmm_dir=exp/$gmm
 ali_dir=exp/${gmm}_ali_${train_set}_sp
 tree_dir=exp/chain${nnet3_affix}/tree_1a
 lat_dir=exp/chain${nnet3_affix}/tri4${nnet3_affix}_train_sp_lats
-lang=data/lang_chain_cleaned_1a
+lang=data/lang_chain${nnet3_affix}_1a
 train_data_dir=data/${train_set}_sp_hires
 train_data_dir_lores=data/${train_set}_sp
 lang_dir=data/langp/tri4
@@ -45,7 +45,8 @@ src_mfcc_config=../../aishell2/s5/conf/mfcc_hires.conf # mfcc config used to ext
 src_ivec_extractor_dir=../../aishell2/s5/exp/chain/extractor_all  # Source ivector extractor dir used to extract ivector for
                                                                   # source data. The ivector for target data is extracted using this extractor.
                          					  # It should be nonempty, if ivector is used in the source model training.
-common_egs_dir=exp/chain/tdnn_aishell2_bab_1a/egs
+common_egs_dir=exp/chain/tdnn_aishell2_bab_1a_lr0.25/egs
+#common_egs_dir=exp/chain/tdnn_aishell2_bab_1a_lr0.25/egs
 primary_lr_factor=0.25 # The learning-rate factor for transferred layers from source
                        # model. e.g. if 0, the paramters transferred from source model
                        # are fixed.
@@ -68,7 +69,7 @@ EOF
 fi
 
 local/chain/run_ivector_common_aishell2_bab.sh --stage $stage \
-                                  --nnet3-affix "$nnet3_affix"
+                                  --nnet3-affix "$nnet3_affix" \
                                   --train-set $train_set \
                                   --gmm $gmm
                                   # --nj $nj \
@@ -194,7 +195,7 @@ if [ $stage -le 18 ]; then
 
   ivector_dir=
   # if $use_ivector; then ivector_dir="exp/nnet2${nnet_affix}/ivectors" ; fi
-  if $use_ivector; then ivector_dir="exp/nnet3/ivectors_train_sp_hires/" ; fi
+  if $use_ivector; then ivector_dir="exp/nnet3${nnet_affix}/ivectors_${train_set}_sp_hires" ; fi
 
   steps/nnet3/chain/train.py --stage $train_stage \
     --cmd "$decode_cmd" \
